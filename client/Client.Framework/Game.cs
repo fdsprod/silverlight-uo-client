@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Client.Framework.Graphics;
 
 namespace Client.Framework
 {

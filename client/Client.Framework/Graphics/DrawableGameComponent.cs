@@ -2,7 +2,7 @@
 using System.Windows.Graphics;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Client.Framework
+namespace Client.Framework.Graphics
 {
     public class DrawableGameComponent : GameComponent, IDrawable
     {

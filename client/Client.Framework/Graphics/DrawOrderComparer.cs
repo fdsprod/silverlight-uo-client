@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Client.Framework
+namespace Client.Framework.Graphics
 {
     internal class DrawOrderComparer : IComparer<IDrawable>
     {

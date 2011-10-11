@@ -84,6 +84,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="ClientGame.cs" />
+    <Compile Include="Net\NetState.cs" />
     <Compile Include="VertexPositionNormalTexture.cs" />
     <Compile Include="Cube.cs" />
     <Compile Include="ClientControl.xaml.cs">
@@ -113,6 +114,10 @@
     <ProjectReference Include="..\..\Client.Framework\Client.Framework.csproj">
       <Project>{905ADB65-1FFB-4DA8-915B-6336F0F436AF}</Project>
       <Name>Client.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Client.Network\Client.Network.csproj">
+      <Project>{99468724-E532-464A-8CED-B319B89297E7}</Project>
+      <Name>Client.Network</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

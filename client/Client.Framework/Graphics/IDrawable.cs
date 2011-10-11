@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Client.Framework
+namespace Client.Framework.Graphics
 {
     public interface IDrawable
     {
