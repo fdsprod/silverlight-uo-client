@@ -6,5 +6,9 @@
     Loaded="OnLoad"
     mc:Ignorable="d"
     d:DesignHeight="300" d:DesignWidth="400">
-        <DrawingSurface x:Name="myDrawingSurface" Draw="OnDraw" />
+    <DrawingSurface x:Name="myDrawingSurface" Draw="OnDraw">
+        <DrawingSurface.CompositionMode>
+            <OffscreenCompositionMode PreferredMultiSampleCount="2" />
+        </DrawingSurface.CompositionMode>
+    </DrawingSurface>
 </UserControl>

@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 
-namespace Client.Net
+namespace Client.Network
 {
     public class NetState
     {
@@ -24,7 +24,7 @@ namespace Client.Net
         private IPAddress m_Address;
         private ByteQueue m_Buffer;
         private SendQueue m_SendQueue;
-        private IMessagePump m_MessagePump;
+        private MessagePump m_MessagePump;
         private bool m_Seeded;
         private bool m_Running;
         protected AsyncCallback m_OnReceive, m_OnSend;
@@ -36,10 +36,10 @@ namespace Client.Net
         private bool m_BlockAllPackets;
         private DateTime m_ConnectedOn;
         private int m_Seed;
-        private AsyncState m_AsyncState;
+        //private AsyncState m_AsyncState;
         private object m_AsyncLock = new object();
-        private IPacketEncoder m_Encoder = null;
-        private static NetStateCreatedCallback m_CreatedCallback;
+        //private IPacketEncoder m_Encoder = null;
+        //private static NetStateCreatedCallback m_CreatedCallback;
         private static int m_CoalesceSleep = -1;
 
         public SendQueue SendQueue
@@ -68,28 +68,28 @@ namespace Client.Net
             get { return m_Address; }
         }
 
-        public AsyncState AsyncState
-        {
-            get { return m_AsyncState; }
-            set { m_AsyncState = value; }
-        }
+        //public AsyncState AsyncState
+        //{
+        //    get { return m_AsyncState; }
+        //    set { m_AsyncState = value; }
+        //}
 
         public object AsyncLock
         {
             get { return m_AsyncLock; }
         }
         
-        public IPacketEncoder PacketEncoder
-        {
-            get { return m_Encoder; }
-            set { m_Encoder = value; }
-        }
+        //public IPacketEncoder PacketEncoder
+        //{
+        //    get { return m_Encoder; }
+        //    set { m_Encoder = value; }
+        //}
         
-        public static NetStateCreatedCallback CreatedCallback
-        {
-            get { return m_CreatedCallback; }
-            set { m_CreatedCallback = value; }
-        }
+        //public static NetStateCreatedCallback CreatedCallback
+        //{
+        //    get { return m_CreatedCallback; }
+        //    set { m_CreatedCallback = value; }
+        //}
 
         public bool SentFirstPacket
         {
@@ -123,14 +123,16 @@ namespace Client.Net
 
         public void BeginReceive()
         {
-            m_AsyncState |= AsyncState.Pending;
-            m_Socket.BeginReceive(m_RecvBuffer, 0, m_RecvBuffer.Length, SocketFlags.None, m_OnReceive, m_Socket);
+            //m_AsyncState |= AsyncState.Pending;
+            //m_Socket.BeginReceive(m_RecvBuffer, 0, m_RecvBuffer.Length, SocketFlags.None, m_OnReceive, m_Socket);
         }
 
-        public NetState(Socket socket, MessagePump messagePump)
+        public event EventHandler Connected;
+
+        public NetState()
         {
-            m_Socket = socket;
-            m_MessagePump = messagePump;
+            m_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            m_MessagePump = new MessagePump();
             m_Buffer = new ByteQueue();
             m_Seeded = false;
             m_Running = false;
@@ -140,32 +142,54 @@ namespace Client.Net
 
             m_NextCheckActivity = DateTime.Now + TimeSpan.FromMinutes(0.5);
 
-            try
+            //try
+            //{
+            //    m_Address = Utility.Intern(((IPEndPoint)m_Socket.RemoteEndPoint).Address);
+            //    m_ToString = m_Address.ToString();
+            //}
+            //catch (Exception ex)
+            //{
+            //    TraceException(ex);
+            //    m_Address = IPAddress.None;
+            //    m_ToString = "(error)";
+            //}
+        }
+
+        public void Connect(string ip, int port)
+        {
+            if (!IPAddress.TryParse(ip, out m_Address))
             {
-                m_Address = Utility.Intern(((IPEndPoint)m_Socket.RemoteEndPoint).Address);
-                m_ToString = m_Address.ToString();
+                throw new Exception("Invalid IP, the ip must be a valid ip address and cannot be a host name.");
             }
-            catch (Exception ex)
+
+            IPEndPoint endPoint = new IPEndPoint(m_Address, port);
+            SocketAsyncEventArgs connectArgs = new SocketAsyncEventArgs();
+
+            connectArgs.UserToken = m_Socket;
+            connectArgs.RemoteEndPoint = endPoint;
+            connectArgs.Completed += OnConnected;
+
+            m_Socket.ConnectAsync(connectArgs);
+        }
+
+        void OnConnected(object sender, SocketAsyncEventArgs e)
+        {
+            e.Completed -= OnConnected;
+
+            SocketError errorCode = e.SocketError;
+
+            if (errorCode != SocketError.Success)
             {
-                TraceException(ex);
-                m_Address = IPAddress.None;
-                m_ToString = "(error)";
+                throw new SocketException((Int32)errorCode);
             }
 
             m_ConnectedOn = DateTime.Now;
 
-            if (m_CreatedCallback != null)
-            {
-                m_CreatedCallback(this);
-            }
-        }
+            var handler = Connected;
 
-        public override string ToString()
-        {
-            return m_ToString;
+            if (handler != null)
+                handler(this, EventArgs.Empty);
         }
-
-        public abstract PacketHandler GetHandler(int packetID);
 
         public virtual void Send(Packet p)
         {
@@ -193,10 +217,10 @@ namespace Client.Net
                 //    prof.Start();
                 //}
 
-                if (m_Encoder != null)
-                {
-                    m_Encoder.EncodeOutgoingPacket(this, ref buffer, ref length);
-                }
+                //if (m_Encoder != null)
+                //{
+                //    m_Encoder.EncodeOutgoingPacket(this, ref buffer, ref length);
+                //}
 
                 try
                 {
@@ -204,7 +228,7 @@ namespace Client.Net
                     {
                         try
                         {
-                            m_Socket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, m_OnSend, m_Socket);
+                            //m_Socket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, m_OnSend, m_Socket);
                         }
                         catch (Exception ex)
                         {
@@ -256,7 +280,7 @@ namespace Client.Net
             {
                 try
                 {
-                    m_Socket.BeginSend(gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, m_Socket);
+                    //m_Socket.BeginSend(gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, m_Socket);
                     return true;
                 }
                 catch (Exception ex)
@@ -275,13 +299,13 @@ namespace Client.Net
 
             try
             {
-                int bytes = s.EndSend(asyncResult);
+                //int bytes = s.EndSend(asyncResult);
 
-                if (bytes <= 0)
-                {
-                    Dispose(false);
-                    return;
-                }
+                //if (bytes <= 0)
+                //{
+                //    Dispose(false);
+                //    return;
+                //}
 
                 m_NextCheckActivity = DateTime.Now + TimeSpan.FromMinutes(1.2);
 
@@ -301,7 +325,7 @@ namespace Client.Net
                 {
                     try
                     {
-                        s.BeginSend(gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, s);
+                        //s.BeginSend(gram.Buffer, 0, gram.Length, SocketFlags.None, m_OnSend, s);
                     }
                     catch (Exception ex)
                     {
@@ -332,7 +356,7 @@ namespace Client.Net
             {
                 lock (m_AsyncLock)
                 {
-                    if ((m_AsyncState & (AsyncState.Pending | AsyncState.Paused)) == 0)
+                    //if ((m_AsyncState & (AsyncState.Pending | AsyncState.Paused)) == 0)
                     {
                         BeginReceive();
                     }
@@ -376,44 +400,44 @@ namespace Client.Net
 
             try
             {
-                int byteCount = s.EndReceive(asyncResult);
+                //int byteCount = s.EndReceive(asyncResult);
 
-                if (byteCount > 0)
-                {
-                    m_NextCheckActivity = DateTime.Now + TimeSpan.FromHours(12);
+                //if (byteCount > 0)
+                //{
+                //    m_NextCheckActivity = DateTime.Now + TimeSpan.FromHours(12);
 
-                    byte[] buffer = m_RecvBuffer;
+                //    byte[] buffer = m_RecvBuffer;
 
-                    if (m_Encoder != null)
-                        m_Encoder.DecodeIncomingPacket(this, ref buffer, ref byteCount);
+                //    if (m_Encoder != null)
+                //        m_Encoder.DecodeIncomingPacket(this, ref buffer, ref byteCount);
 
-                    lock (m_Buffer)
-                        m_Buffer.Enqueue(buffer, 0, byteCount);
+                //    lock (m_Buffer)
+                //        m_Buffer.Enqueue(buffer, 0, byteCount);
 
-                    m_MessagePump.OnReceive(this);
+                //    m_MessagePump.OnReceive(this);
 
-                    lock (m_AsyncLock)
-                    {
-                        m_AsyncState &= ~AsyncState.Pending;
+                //    lock (m_AsyncLock)
+                //    {
+                //        m_AsyncState &= ~AsyncState.Pending;
 
-                        if ((m_AsyncState & AsyncState.Paused) == 0)
-                        {
-                            try
-                            {
-                                BeginReceive();
-                            }
-                            catch (Exception ex)
-                            {
-                                TraceException(ex);
-                                Dispose(false);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    Dispose(false);
-                }
+                //        if ((m_AsyncState & AsyncState.Paused) == 0)
+                //        {
+                //            try
+                //            {
+                //                BeginReceive();
+                //            }
+                //            catch (Exception ex)
+                //            {
+                //                TraceException(ex);
+                //                Dispose(false);
+                //            }
+                //        }
+                //    }
+                //}
+                //else
+                //{
+                //    Dispose(false);
+                //}
             }
             catch
             {
@@ -434,7 +458,7 @@ namespace Client.Net
                 //{
                     Debug.WriteLine(string.Format("# {0}", DateTime.Now));
 
-                    Debug.WriteLine.WriteLine(ex);
+                    Debug.WriteLine(ex);
 
                     //op.WriteLine();
                     //op.WriteLine();

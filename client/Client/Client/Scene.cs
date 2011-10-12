@@ -5,24 +5,19 @@ using Client.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Client.Network;
 
 namespace Client
 {
     public class Scene : IDisposable
     {
-        #region Fields
-
         readonly DrawingSurface _drawingSurface;
         readonly ContentManager contentManager;
         readonly Cube cube;
 
         float aspectRatio;
         float rotationAngle;
-
-        #endregion Fields
-
-        #region Properties
-
+        
         public ContentManager ContentManager
         {
             get
@@ -39,10 +34,6 @@ namespace Client
             }
         }
 
-        #endregion Properties
-
-        #region Creation
-
         public Scene(DrawingSurface drawingSurface)
         {
             _drawingSurface = drawingSurface;
@@ -58,12 +49,11 @@ namespace Client
 
             // Initializing variables
             cube = new Cube(this, 1.0f);
+                        
+            NetState nc = new NetState();
+            nc.Connect("127.0.0.1", 2593);
         }
-
-        #endregion Creation
-
-        #region Methods
-
+        
         private void _drawingSurface_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
         {
             aspectRatio = (float)(_drawingSurface.ActualWidth / _drawingSurface.ActualHeight);
@@ -94,7 +84,5 @@ namespace Client
         {
             _drawingSurface.SizeChanged -= _drawingSurface_SizeChanged;
         }
-
-        #endregion Methods
     }
 }
