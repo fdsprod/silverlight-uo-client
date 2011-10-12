@@ -10,7 +10,7 @@ namespace Client
         public ClientGame(DrawingSurface surface)
             : base(surface)
         {
-            IsFixedTimeStep = false;
+            //IsFixedTimeStep = false;
         }
 
         protected override void Initialize()
