@@ -1,3 +1,5 @@
+#summary List of requirements for compiling the solution.
+
 = Required Components =
 
  * Visual Studio SP1 http://go.microsoft.com/fwlink/?LinkId=209902
