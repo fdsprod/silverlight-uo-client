@@ -2,20 +2,29 @@ float4x4 WorldViewProjection;
 float4x4 World;
 float3 LightPosition;
 
-// Structs
+texture Texture;
+
+sampler2D TextureSampler = sampler_state {
+    Texture = (Texture);
+    MinFilter = Linear;
+    MagFilter = Linear;
+    AddressU = Clamp;
+    AddressV = Clamp;
+};
+
 struct VS_INPUT
 {
     float4 position				: POSITION;
+	float2 texCoords			: TEXCOORD0;
 	float3 normal				: NORMAL;
-	float4 color				: COLOR0;
 };
 
 struct VS_OUTPUT
 {
     float4 position				: POSITION;
-	float3 normalWorld			: TEXCOORD0;
-	float3 positionWorld		: TEXCOORD1;
-	float4 color				: COLOR0;		
+	float2 texCoords			: TEXCOORD0;	
+	float3 normalWorld			: TEXCOORD1;
+	float3 positionWorld		: TEXCOORD2;	
 };
 
 // Vertex Shader
@@ -23,17 +32,10 @@ VS_OUTPUT mainVS(VS_INPUT In)
 {
     VS_OUTPUT Out = (VS_OUTPUT)0;
 
-	// Compute projected position
     Out.position = mul(In.position, WorldViewProjection);
-
-	// Compute world normal
 	Out.normalWorld = mul(In.normal,(float3x3) WorldViewProjection);
-
-	// Compute world position
 	Out.positionWorld = (mul(In.position, World)).xyz;
-
-	// Transmit vertex color
-	Out.color = In.color;
+	Out.texCoords = In.texCoords;
 
     return Out;
 }
@@ -44,9 +46,10 @@ float4 mainPS(VS_OUTPUT In) : COLOR
 	// Light equation
 	float3 lightDirectionW = normalize(LightPosition - In.positionWorld);
 	float ndl = max(0, dot(In.normalWorld, lightDirectionW));
+	float4 color = tex2D(TextureSampler, In.texCoords);
 
 	// Final color
-	return float4(In.color.rgb * ndl, 1);
+	return float4(color.rgb * ndl, 1);
 }
 
 // Technique

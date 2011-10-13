@@ -19,6 +19,13 @@ namespace Client
             scene = new Scene(DrawingSurface);
         }
 
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            scene.Update(gameTime);
+        }
+
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);

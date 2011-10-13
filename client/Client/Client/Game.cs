@@ -7,6 +7,7 @@ using System.Windows.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Client.Diagnostics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Client
 {
@@ -79,7 +80,9 @@ namespace Client
             _lastFrameElapsedGameTime = TimeSpan.Zero;
             _targetElapsedTime = TimeSpan.FromTicks(166667L);
             _gameTime = new GameTime();
-            _gameServices = new GameServiceContainer();         
+            _gameServices = new GameServiceContainer();
+
+            Keyboard.RootControl = (Control)drawingSurface.Parent;
         }
 
         ~Game()

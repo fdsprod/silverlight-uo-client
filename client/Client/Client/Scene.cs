@@ -8,6 +8,8 @@ using Client.Network;
 using System.Windows;
 using Client.Network.Packets;
 using System.Diagnostics;
+using Client.Ultima;
+using Microsoft.Xna.Framework.Input;
 
 namespace Client
 {
@@ -48,6 +50,38 @@ namespace Client
 
             // Initializing variables
             cube = new Cube(this, 1.0f);
+            cube.Texture = Textures.CreateTexture(index);
+        }
+
+        int index = 0;
+
+        KeyboardState _previousState;
+
+        public void Update(GameTime gameTime)
+        {
+            int i = index;
+            KeyboardState currentState = Keyboard.GetState();
+
+            if (_previousState.IsKeyUp(System.Windows.Input.Key.Down) &&
+                currentState.IsKeyDown(System.Windows.Input.Key.Down))
+            {
+                index--;
+            }
+            if (_previousState.IsKeyUp(System.Windows.Input.Key.Up) &&
+                currentState.IsKeyDown(System.Windows.Input.Key.Up))
+            {
+                index++;
+            }
+
+            index = Math.Min(0x1000, index);
+            index = Math.Max(0, index);
+
+            if (index != i)
+            {
+                cube.Texture = Textures.CreateTexture(index);
+            }
+
+            _previousState = currentState;
         }
 
         private void _drawingSurface_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
