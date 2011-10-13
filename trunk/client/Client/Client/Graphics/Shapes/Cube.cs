@@ -1,25 +1,22 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Client.Ultima;
+using System.Windows.Media.Imaging;
 
 namespace Client
 {
     public class Cube
     {
-        #region Fields
-
         readonly Scene scene;
         readonly GraphicsDevice graphicsDevice;
         readonly VertexBuffer vertexBuffer;
         readonly IndexBuffer indexBuffer;
         readonly SilverlightEffect mySilverlightEffect;
+        readonly SilverlightEffectParameter textureParameter;
         readonly SilverlightEffectParameter worldViewProjectionParameter;
         readonly SilverlightEffectParameter worldParameter;
         readonly SilverlightEffectParameter lightPositionParameter;
-
-        #endregion Fields
-
-        #region Properties
 
         public int VerticesCount { get; private set; }
 
@@ -49,16 +46,18 @@ namespace Client
             }
         }
 
-        #endregion Properties
-
-        #region Creation
+        public Texture2D Texture
+        {
+            get;
+            set;
+        }
 
         public Cube(Scene scene, float size)
         {
             this.scene = scene;
             this.graphicsDevice = scene.GraphicsDevice;
             this.mySilverlightEffect = scene.ContentManager.Load<SilverlightEffect>("CustomEffect");
-
+       
             // Cache effect parameters
             worldViewProjectionParameter = mySilverlightEffect.Parameters["WorldViewProjection"];
             worldParameter = mySilverlightEffect.Parameters["World"];
@@ -68,7 +67,7 @@ namespace Client
             this.LightPosition = new Vector3(1, 1, -10);
 
             // Temporary lists
-            List<VertexPositionColorNormal> vertices = new List<VertexPositionColorNormal>();
+            List<VertexPositionNormalTexture> vertices = new List<VertexPositionNormalTexture>();
             List<ushort> indices = new List<ushort>();
 
             // A cube has six faces, each one pointing in a different direction.
@@ -98,18 +97,16 @@ namespace Client
                 indices.Add((ushort)(vertices.Count + 2));
                 indices.Add((ushort)(vertices.Count + 3));
 
-                // Four vertices per face.
-                Vector4 color = new Vector4(0, 1, 0, 1);
-                vertices.Add(new VertexPositionColorNormal((normal - side1 - side2) * size / 2, normal, color));
-                vertices.Add(new VertexPositionColorNormal((normal - side1 + side2) * size / 2, normal, color));
-                vertices.Add(new VertexPositionColorNormal((normal + side1 + side2) * size / 2, normal, color));
-                vertices.Add(new VertexPositionColorNormal((normal + side1 - side2) * size / 2, normal, color));
+                vertices.Add(new VertexPositionNormalTexture((normal - side1 - side2) * size / 2, normal, new Vector2(0, 0)));
+                vertices.Add(new VertexPositionNormalTexture((normal - side1 + side2) * size / 2, normal, new Vector2(1, 0)));
+                vertices.Add(new VertexPositionNormalTexture((normal + side1 + side2) * size / 2, normal, new Vector2(1, 1)));
+                vertices.Add(new VertexPositionNormalTexture((normal + side1 - side2) * size / 2, normal, new Vector2(0, 1)));
             }
 
             // Create a vertex buffer, and copy our vertex data into it.
-            vertexBuffer = new VertexBuffer(graphicsDevice, VertexPositionColorNormal.VertexDeclaration, vertices.Count, BufferUsage.None);
+            vertexBuffer = new VertexBuffer(graphicsDevice, VertexPositionNormalTexture.VertexDeclaration, vertices.Count, BufferUsage.None);
 
-            vertexBuffer.SetData(0, vertices.ToArray(), 0, vertices.Count, VertexPositionColorNormal.Stride);
+            vertexBuffer.SetData(0, vertices.ToArray(), 0, vertices.Count, VertexPositionNormalTexture.Stride);
 
             // Create an index buffer, and copy our index data into it.
             indexBuffer = new IndexBuffer(graphicsDevice, IndexElementSize.SixteenBits, indices.Count, BufferUsage.None);
@@ -120,13 +117,9 @@ namespace Client
             VerticesCount = vertices.Count;
             FaceCount = indices.Count / 3;
         }
-
-        #endregion Creation
-
-        #region Methods
-
+        
         public void Draw()
-        {
+        {            
             foreach (var pass in mySilverlightEffect.CurrentTechnique.Passes)
             {
                 // Apply pass
@@ -135,12 +128,11 @@ namespace Client
                 // Set vertex buffer and index buffer
                 graphicsDevice.SetVertexBuffer(vertexBuffer);
                 graphicsDevice.Indices = indexBuffer;
+                graphicsDevice.Textures[0] = Texture;
 
                 // The shaders are already set so we can draw primitives
                 graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, VerticesCount, 0, FaceCount);
             }
         }
-
-        #endregion Methods
     }
 }

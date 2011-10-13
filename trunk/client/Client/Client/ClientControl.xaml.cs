@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Graphics;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Graphics;
+using Client.Ultima;
 
 namespace Client
 {

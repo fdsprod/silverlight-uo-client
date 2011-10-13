@@ -86,7 +86,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Asserter.cs" />
-    <Compile Include="Cache.cs" />
+    <Compile Include="Collections\Cache.cs" />
     <Compile Include="ClientGame.cs" />
     <Compile Include="Diagnostics\ITraceListener.cs" />
     <Compile Include="Diagnostics\Listeners\DebugTraceListener.cs" />
@@ -122,6 +122,9 @@
     <Compile Include="Graphics\VertexPositionColorNormal.cs" />
     <Compile Include="Stopwatch.cs" />
     <Compile Include="Text\ASCIIEncoding.cs" />
+    <Compile Include="Ultima\FileIndex.cs" />
+    <Compile Include="Ultima\PixelConverter.cs" />
+    <Compile Include="Ultima\Textures.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -145,9 +148,7 @@
       <Name>Client.Framework</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Ultima\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Properties\InBrowserSettings.xml" />
   </ItemGroup>
