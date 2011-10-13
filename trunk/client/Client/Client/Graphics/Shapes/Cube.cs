@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Client.Ultima;
-using System.Windows.Media.Imaging;
 
 namespace Client
 {

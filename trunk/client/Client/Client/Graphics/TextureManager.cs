@@ -1,15 +1,6 @@
 ﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using Microsoft.Xna.Framework.Graphics;
 using Client.Collections;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Client.Graphics
 {
@@ -21,8 +12,10 @@ namespace Client.Graphics
 
     public class TextureManager : ITextureManager
     {
-        private Texture2D _missingTexture;
-        private Cache<int, Texture2D> _landCache;
+        private readonly TimeSpan _cleanInterval = TimeSpan.FromMinutes(1);
+        private readonly Texture2D _missingTexture;
+        private readonly Cache<int, Texture2D> _landCache;
+        private DateTime _lastCacheClean;
 
         public Cache<int, Texture2D> LandCache
         {
@@ -33,6 +26,7 @@ namespace Client.Graphics
         {
             _missingTexture = engine.Content.Load<Texture2D>("Textures\\missing-texture");
             _landCache = new Cache<int, Texture2D>(TimeSpan.FromMinutes(5), 0x1000);
+            _lastCacheClean = DateTime.MinValue;
         }
 
         public Texture2D GetLand(int index)
@@ -42,7 +36,8 @@ namespace Client.Graphics
             if (texture != null)
                 return texture;
 
-
+            // TODO: First check if the texture is cached on disk, if not
+            //       we need to fetch it from the online storage
 
             return _missingTexture;
         }
@@ -54,7 +49,13 @@ namespace Client.Graphics
 
         public void Update(GameTime gameTime)
         {
+            DateTime now = DateTime.Now;
+
+            if (_lastCacheClean + _cleanInterval >= now)
+                return;
+
             _landCache.Clean();
+            _lastCacheClean = now;
         }
     }
 }
