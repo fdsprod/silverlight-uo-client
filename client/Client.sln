@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Content", "Client\Cl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Web.Content", "Client\Client.Web.Content\Client.Web.Content.contentproj", "{E437A389-9FD2-439F-B5E2-74373EB91BA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Framework", "Client.Framework\Client.Framework.csproj", "{905ADB65-1FFB-4DA8-915B-6336F0F436AF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{9F2A6B9C-0951-4666-9D93-C3E58B6AE5C5}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{E437A389-9FD2-439F-B5E2-74373EB91BA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E437A389-9FD2-439F-B5E2-74373EB91BA3}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{905ADB65-1FFB-4DA8-915B-6336F0F436AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{905ADB65-1FFB-4DA8-915B-6336F0F436AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{905ADB65-1FFB-4DA8-915B-6336F0F436AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{905ADB65-1FFB-4DA8-915B-6336F0F436AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

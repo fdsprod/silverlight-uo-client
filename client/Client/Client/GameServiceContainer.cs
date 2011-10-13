@@ -5,7 +5,7 @@ namespace Client
 {
     public class GameServiceContainer : IServiceProvider
     {
-        private Dictionary<Type, object> _services = new Dictionary<Type, object>();
+        private readonly Dictionary<Type, object> _services = new Dictionary<Type, object>();
 
         public void AddService(Type type, object provider)
         {
@@ -32,7 +32,7 @@ namespace Client
             if (_services.ContainsKey(type))
                 return _services[type];
 
-            return (object)null;
+            return null;
         }
     }
 }

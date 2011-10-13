@@ -96,22 +96,10 @@
     <Compile Include="Diagnostics\TraceMessageEventArgs.cs" />
     <Compile Include="Diagnostics\Tracer.cs" />
     <Compile Include="Diagnostics\TraceType.cs" />
-    <Compile Include="Game.cs" />
+    <Compile Include="Engine.cs" />
     <Compile Include="GameServiceContainer.cs" />
     <Compile Include="GameTime.cs" />
     <Compile Include="ICloneable.cs" />
-    <Compile Include="Network\BufferPool.cs" />
-    <Compile Include="Network\ByteQueue.cs" />
-    <Compile Include="Network\MessagePump.cs" />
-    <Compile Include="Network\NetState.cs" />
-    <Compile Include="Network\Packet.cs" />
-    <Compile Include="Network\PacketHandler.cs" />
-    <Compile Include="Network\PacketHandlers.cs" />
-    <Compile Include="Network\PacketReader.cs" />
-    <Compile Include="Network\Packets\LoginPacket.cs" />
-    <Compile Include="Network\Packets\SeedPacket.cs" />
-    <Compile Include="Network\PacketWriter.cs" />
-    <Compile Include="Network\SendQueue.cs" />
     <Compile Include="Graphics\VertexPositionNormalTexture.cs" />
     <Compile Include="Graphics\Shapes\Cube.cs" />
     <Compile Include="ClientControl.xaml.cs">
@@ -120,7 +108,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scene.cs" />
     <Compile Include="Graphics\VertexPositionColorNormal.cs" />
-    <Compile Include="Stopwatch.cs" />
     <Compile Include="Text\ASCIIEncoding.cs" />
     <Compile Include="Ultima\FileIndex.cs" />
     <Compile Include="Ultima\PixelConverter.cs" />
@@ -141,12 +128,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\OutOfBrowserSettings.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Client.Framework\Client.Framework.csproj">
-      <Project>{905ADB65-1FFB-4DA8-915B-6336F0F436AF}</Project>
-      <Name>Client.Framework</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
