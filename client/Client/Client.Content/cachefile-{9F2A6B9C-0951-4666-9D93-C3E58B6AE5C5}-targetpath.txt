@@ -1,1 +1,3 @@
 CustomEffect.xnb
+Textures\missing-texture.xnb
+Shaders\Map.xnb
