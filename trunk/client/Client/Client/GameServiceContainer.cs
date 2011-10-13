@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Client.Framework
+namespace Client
 {
     public class GameServiceContainer : IServiceProvider
     {

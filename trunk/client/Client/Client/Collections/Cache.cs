@@ -11,7 +11,7 @@ using System.Windows.Shapes;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Client.Framework
+namespace Client.Collections
 {
     public class Cache<T, U> : IDisposable
     {

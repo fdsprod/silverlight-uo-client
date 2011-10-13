@@ -11,7 +11,7 @@ using System.Windows.Shapes;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Client.Framework.Text
+namespace Client.Text
 {
     public class ASCIIEncoding : Encoding
     {

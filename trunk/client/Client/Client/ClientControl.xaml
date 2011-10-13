@@ -8,7 +8,7 @@
     d:DesignHeight="300" d:DesignWidth="400">
     <DrawingSurface x:Name="myDrawingSurface" Draw="OnDraw">
         <DrawingSurface.CompositionMode>
-            <OffscreenCompositionMode PreferredMultiSampleCount="2" />
+            <OffscreenCompositionMode PreferredMultiSampleCount="2" PreferredDepthStencilFormat="Depth16"  RenderTargetUsage="PreserveContents"  />
         </DrawingSurface.CompositionMode>
     </DrawingSurface>
 </UserControl>

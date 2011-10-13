@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Graphics;
+using System.Diagnostics;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Client
 {
@@ -13,12 +15,12 @@ namespace Client
             InitializeComponent();
 
             game = new ClientGame(myDrawingSurface);
+            game.Run();
         }
 
         private void OnDraw(object sender, DrawEventArgs e)
         {
             game.Tick(e.DeltaTime, e.TotalTime);
-            // Let's go for another turn!
             e.InvalidateSurface();
         }
 

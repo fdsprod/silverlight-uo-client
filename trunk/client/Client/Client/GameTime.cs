@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Client.Framework
+namespace Client
 {
     public class GameTime
     {

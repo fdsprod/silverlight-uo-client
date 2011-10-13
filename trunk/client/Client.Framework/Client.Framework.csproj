@@ -63,28 +63,12 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Asserter.cs" />
-    <Compile Include="Cache.cs" />
-    <Compile Include="Graphics\DrawableGameComponent.cs" />
-    <Compile Include="Graphics\DrawOrderComparer.cs" />
-    <Compile Include="Game.cs" />
-    <Compile Include="GameComponent.cs" />
-    <Compile Include="GameComponentCollection.cs" />
-    <Compile Include="GameComponentCollectionEventArgs.cs" />
-    <Compile Include="GameServiceContainer.cs" />
-    <Compile Include="GameTime.cs" />
-    <Compile Include="Graphics\GraphicsDeviceExtensions.cs" />
-    <Compile Include="ICloneable.cs" />
-    <Compile Include="Graphics\IDrawable.cs" />
-    <Compile Include="IGameComponent.cs" />
-    <Compile Include="IUpdateable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Stopwatch.cs" />
-    <Compile Include="Text\ASCIIEncoding.cs" />
-    <Compile Include="UpdateOrderComparer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components\" />
+    <Folder Include="Graphics\" />
+    <Folder Include="Text\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <ProjectExtensions>

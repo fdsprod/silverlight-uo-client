@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows;
+using Client.Diagnostics;
+using System.IO;
 
 namespace Client
 {
@@ -16,6 +18,13 @@ namespace Client
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            string myDocumentsDirectory= Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string loggingFolder = Path.Combine(myDocumentsDirectory, "Silverlight UO Client\\logs");
+            string debugLogPath = Path.Combine(loggingFolder, "debug.log");
+
+            new DebugTraceListener();
+            new DebugLogTraceListener(debugLogPath);
+
             this.RootVisual = new ClientControl();
         }
 

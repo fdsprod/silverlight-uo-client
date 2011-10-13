@@ -1,4 +1,4 @@
-﻿namespace Client.Framework
+﻿namespace Client
 {
     public interface ICloneable
     {

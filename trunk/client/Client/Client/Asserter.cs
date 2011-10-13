@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Client.Framework
+namespace Client
 {
     public static class Asserter
     {
@@ -59,6 +59,12 @@ namespace Client.Framework
         }
 
         public static void AssertIsNotLessThan(string parameterName, float minimumValue, float actualValue)
+        {
+            if (actualValue < minimumValue)
+                throw new ArgumentOutOfRangeException(parameterName);
+        }
+
+        public static void AssertIsNotLessThan(string parameterName, TimeSpan minimumValue, TimeSpan actualValue)
         {
             if (actualValue < minimumValue)
                 throw new ArgumentOutOfRangeException(parameterName);
