@@ -87,6 +87,11 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Asserter.cs" />
+    <Compile Include="ComponentModel\Design\ModelBase.cs" />
+    <Compile Include="ComponentModel\Design\NotifierBase.cs" />
+    <Compile Include="ComponentModel\Design\PropertySupport.cs" />
+    <Compile Include="ComponentModel\Design\RaisePropertyChangedAttribute.cs" />
+    <Compile Include="ComponentModel\Design\ViewModelBase.cs" />
     <Compile Include="Configuration\ConfigFile.cs" />
     <Compile Include="Configuration\ConfigSections.cs" />
     <Compile Include="Configuration\ConfigurationService.cs" />
@@ -115,6 +120,9 @@
     <Compile Include="ClientControl.xaml.cs">
       <DependentUpon>ClientControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Input\CommandBase.cs" />
+    <Compile Include="Input\IRaiseCanExecuteChanged.cs" />
+    <Compile Include="Input\RelayCommand.cs" />
     <Compile Include="IO\FileSystemHelper.cs" />
     <Compile Include="IO\Paths.cs" />
     <Compile Include="Network\BufferPool.cs" />
@@ -136,10 +144,13 @@
     <Compile Include="Graphics\VertexPositionColorNormal.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
     <Compile Include="Text\ASCIIEncoding.cs" />
+    <Compile Include="Threading\DispatcherProxy.cs" />
     <Compile Include="TypeDescriptor.cs" />
     <Compile Include="Ultima\FileIndex.cs" />
     <Compile Include="Ultima\PixelConverter.cs" />
     <Compile Include="Ultima\Textures.cs" />
+    <Compile Include="WeakAction.cs" />
+    <Compile Include="WeakReferenceManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
