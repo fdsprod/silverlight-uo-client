@@ -2,7 +2,7 @@
 
 namespace Client
 {
-    public class ClientGame : Game
+    public class ClientGame : Engine
     {
         Scene scene;
 
