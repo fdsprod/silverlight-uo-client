@@ -46,7 +46,7 @@ namespace Client
 
             // Initializing variables
             _cube = new Cube(this, 1.0f);
-            //_cube.Texture = Textures.CreateTexture(_index);
+            _cube.Texture = _contentManager.Load<Texture2D>("Textures\\missing-texture");
         }
 
         public void Update(GameTime gameTime)
