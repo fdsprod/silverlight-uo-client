@@ -85,16 +85,43 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Asserter.cs" />
+    <Compile Include="Cache.cs" />
     <Compile Include="ClientGame.cs" />
-    <Compile Include="Net\NetState.cs" />
-    <Compile Include="VertexPositionNormalTexture.cs" />
-    <Compile Include="Cube.cs" />
+    <Compile Include="Diagnostics\ITraceListener.cs" />
+    <Compile Include="Diagnostics\Listeners\DebugTraceListener.cs" />
+    <Compile Include="Diagnostics\Listeners\DebugLogTraceListener.cs" />
+    <Compile Include="Diagnostics\TraceListener.cs" />
+    <Compile Include="Diagnostics\TraceMessage.cs" />
+    <Compile Include="Diagnostics\TraceMessageEventArgs.cs" />
+    <Compile Include="Diagnostics\Tracer.cs" />
+    <Compile Include="Diagnostics\TraceType.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="GameServiceContainer.cs" />
+    <Compile Include="GameTime.cs" />
+    <Compile Include="ICloneable.cs" />
+    <Compile Include="Network\BufferPool.cs" />
+    <Compile Include="Network\ByteQueue.cs" />
+    <Compile Include="Network\MessagePump.cs" />
+    <Compile Include="Network\NetState.cs" />
+    <Compile Include="Network\Packet.cs" />
+    <Compile Include="Network\PacketHandler.cs" />
+    <Compile Include="Network\PacketHandlers.cs" />
+    <Compile Include="Network\PacketReader.cs" />
+    <Compile Include="Network\Packets\LoginPacket.cs" />
+    <Compile Include="Network\Packets\SeedPacket.cs" />
+    <Compile Include="Network\PacketWriter.cs" />
+    <Compile Include="Network\SendQueue.cs" />
+    <Compile Include="Graphics\VertexPositionNormalTexture.cs" />
+    <Compile Include="Graphics\Shapes\Cube.cs" />
     <Compile Include="ClientControl.xaml.cs">
       <DependentUpon>ClientControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scene.cs" />
-    <Compile Include="VertexPositionColorNormal.cs" />
+    <Compile Include="Graphics\VertexPositionColorNormal.cs" />
+    <Compile Include="Stopwatch.cs" />
+    <Compile Include="Text\ASCIIEncoding.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -116,10 +143,6 @@
     <ProjectReference Include="..\..\Client.Framework\Client.Framework.csproj">
       <Project>{905ADB65-1FFB-4DA8-915B-6336F0F436AF}</Project>
       <Name>Client.Framework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Client.Network\Client.Network.csproj">
-      <Project>{99468724-E532-464A-8CED-B319B89297E7}</Project>
-      <Name>Client.Network</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

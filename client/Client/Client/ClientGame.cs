@@ -1,5 +1,4 @@
 ﻿using System.Windows.Controls;
-using Client.Framework;
 
 namespace Client
 {
@@ -10,7 +9,7 @@ namespace Client
         public ClientGame(DrawingSurface surface)
             : base(surface)
         {
-            //IsFixedTimeStep = false;
+
         }
 
         protected override void Initialize()
