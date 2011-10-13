@@ -1,27 +1,10 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-
+﻿
 namespace Client.Network
 {
     public class MessagePump
     {
-        private byte[] _peek;
-
-        public MessagePump()
-        {
-            _peek = new byte[4];
-        }
-
         private const int BufferSize = 4096;
-        private BufferPool m_Buffers = new BufferPool("Processor", 4, BufferSize);
+        private readonly BufferPool _buffers = new BufferPool("Processor", 4, BufferSize);
 
         public bool OnReceive(NetState ns)
         {
@@ -70,30 +53,20 @@ namespace Client.Network
                         }
                     }
 
-                    if (length >= packetLength)
-                    {
-                        byte[] packetBuffer;
-
-                        if (BufferSize >= packetLength)
-                            packetBuffer = m_Buffers.AcquireBuffer();
-                        else
-                            packetBuffer = new byte[packetLength];
-
-                        packetLength = buffer.Dequeue(packetBuffer, 0, packetLength);
-
-                        PacketReader r = new PacketReader(packetBuffer, packetLength, handler.Length != 0);
-
-                        handler.OnReceive(ns, r);
-
-                        length = buffer.Length;
-
-                        if (BufferSize >= packetLength)
-                            m_Buffers.ReleaseBuffer(packetBuffer);
-                    }
-                    else
-                    {
+                    if (length < packetLength)
                         break;
-                    }
+
+                    byte[] packetBuffer = BufferSize >= packetLength ? _buffers.AcquireBuffer() : new byte[packetLength];
+                    packetLength = buffer.Dequeue(packetBuffer, 0, packetLength);
+
+                    PacketReader r = new PacketReader(packetBuffer, packetLength, handler.Length != 0);
+
+                    handler.OnReceive(ns, r);
+
+                    length = buffer.Length;
+
+                    if (BufferSize >= packetLength)
+                        _buffers.ReleaseBuffer(packetBuffer);
                 }
             }
 

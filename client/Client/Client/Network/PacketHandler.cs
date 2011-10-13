@@ -1,4 +1,3 @@
-using System;
 
 namespace Client.Network
 {
@@ -6,9 +5,9 @@ namespace Client.Network
 
     public class PacketHandler
     {
-        private int _packetId;
-        private int _length;
-        private OnPacketReceive _onReceive;
+        private readonly int _packetId;
+        private readonly int _length;
+        private readonly OnPacketReceive _onReceive;
 
         public PacketHandler(int packetId, int length, OnPacketReceive onReceive)
         {

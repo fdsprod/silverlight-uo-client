@@ -131,6 +131,7 @@ namespace Client
             catch (Exception e)
             {
                 Tracer.Error(e);
+                throw;
             }
         }
 

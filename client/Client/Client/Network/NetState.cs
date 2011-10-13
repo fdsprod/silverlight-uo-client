@@ -1,31 +1,24 @@
 ﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using Client.Network;
-using System.Net.Sockets;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
+using System.Net;
+using System.Net.Sockets;
+
+using Client.Diagnostics;
 
 namespace Client.Network
 {
     public class NetState
     {
-        private BufferPool _recvBuffer;
+        private readonly BufferPool _recvBuffer;
+        private readonly MessagePump _messagePump;
+
         private Socket _socket;
         private IPAddress _address;
         private IPEndPoint _hostEndPoint;
         private ByteQueue _buffer;
-        private MessagePump _messagePump;
-        private bool _compressionEnabled;
         private DateTime _connectedOn;
+
+        private bool _compressionEnabled;
         private bool _isConnected;
         private bool _disposing;
 
@@ -158,12 +151,12 @@ namespace Client.Network
                 }
                 catch (CapacityExceededException)
                 {
-                    Debug.WriteLine("Client: {0}: Too much data pending, disconnecting...", this);
+                    Tracer.Error("Too much data pending, disconnecting...");
                     Dispose();
                 }
                 catch (Exception ex)
                 {
-                    TraceException(ex);
+                    Tracer.Error(ex);
                     Dispose();
                 }
 
@@ -171,12 +164,9 @@ namespace Client.Network
             }
             else
             {
-                Debug.WriteLine("Client: {0}: null buffer send, disconnecting...", this);
-                //using (StreamWriter op = new StreamWriter("null_send.log", true))
-                //{
-                    Debug.WriteLine(string.Format("{0} Client: {1}: null buffer send, disconnecting...", DateTime.Now, this));
-                    Debug.WriteLine(new System.Diagnostics.StackTrace().ToString());
-                //}
+                Tracer.Error("Null buffer send, disconnecting...");
+                Tracer.Error(new StackTrace());
+
                 Dispose();
             }
         }
@@ -199,7 +189,7 @@ namespace Client.Network
                 if (byteCount > 0)
                 {
                     byte[] buffer = e.Buffer;
-                    
+
                     lock (_buffer)
                         _buffer.Enqueue(buffer, 0, byteCount);
 
@@ -212,7 +202,7 @@ namespace Client.Network
                     }
                     catch (Exception ex)
                     {
-                        TraceException(ex);
+                        Tracer.Error(ex);
                         Dispose();
                     }
                 }
@@ -224,25 +214,6 @@ namespace Client.Network
             catch
             {
                 Dispose();
-            }
-        }
-
-        public static void TraceException(Exception ex)
-        {
-            try
-            {
-                //using (StreamWriter op = new StreamWriter("network-errors.log", true))
-                //{
-                    Debug.WriteLine(string.Format("# {0}", DateTime.Now));
-
-                    Debug.WriteLine(ex);
-
-                    //op.WriteLine();
-                    //op.WriteLine();
-                //}
-            }
-            catch
-            {
             }
         }
 
@@ -261,7 +232,7 @@ namespace Client.Network
             }
             catch (SocketException ex)
             {
-                TraceException(ex);
+                Tracer.Error(ex);
             }
 
             try
@@ -270,7 +241,7 @@ namespace Client.Network
             }
             catch (SocketException ex)
             {
-                TraceException(ex);
+                Tracer.Error(ex);
             }
 
             _socket = null;
@@ -279,7 +250,7 @@ namespace Client.Network
 
         internal PacketHandler GetHandler(int packetID)
         {
-            throw new NotImplementedException();
+            return PacketHandlers.GetHandler(packetID);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using Client.Configuration;
 
 namespace Client
 {
@@ -15,6 +16,8 @@ namespace Client
         protected override void Initialize()
         {
             base.Initialize();
+
+            IConfigurationService configurationService = new ConfigurationService(this);
 
             scene = new Scene(DrawingSurface);
         }

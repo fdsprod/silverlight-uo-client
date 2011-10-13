@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
 using System.Diagnostics;
+using System.IO;
 
 namespace Client.Network
 {
 
-	public abstract class Packet
+    public abstract class Packet
     {
         [Flags]
         private enum State
@@ -21,196 +18,194 @@ namespace Client.Network
             Warned = 0x10
         }
 
-		protected PacketWriter Stream;
+        private const int BufferSize = 4096;
 
-		private int _packetID;
-		private int _length;
-		private State _state;
+        private static readonly BufferPool _buffers = new BufferPool("Compressed", 16, BufferSize);
 
-		public int PacketID
-		{
-			get { return _packetID; }
-		}
+        protected PacketWriter Stream;
 
-		public Packet( int packetID )
-		{
-			_packetID = packetID;
-		}
+        private readonly int _packetID;
+        private readonly int _length;
+        private State _state;
 
-		public void EnsureCapacity( int length )
-		{
-			Stream = PacketWriter.CreateInstance( length );
-			Stream.Write( (byte)_packetID );
-			Stream.Write( (short)0 );
-		}
+        public PacketWriter UnderlyingStream
+        {
+            get { return Stream; }
+        }
 
-        public Packet(int packetID, int length)
-		{
-			_packetID = packetID;
-			_length = length;
+        public int PacketID
+        {
+            get { return _packetID; }
+        }
 
-			Stream = PacketWriter.CreateInstance( length );
-			Stream.Write( (byte)packetID );
-		}
+        protected Packet(int packetID)
+        {
+            _packetID = packetID;
+        }
 
-		public PacketWriter UnderlyingStream
-		{
-			get
-			{
-				return Stream;
-			}
-		}
+        protected Packet(int packetID, int length)
+        {
+            _packetID = packetID;
+            _length = length;
 
-		private const int BufferSize = 4096;
-		private static BufferPool _buffers = new BufferPool( "Compressed", 16, BufferSize );
+            Stream = PacketWriter.CreateInstance(length);
+            Stream.Write((byte)packetID);
+        }
 
-		public static Packet SetStatic( Packet p )
-		{
-			p.SetStatic();
-			return p;
-		}
+        public void EnsureCapacity(int length)
+        {
+            Stream = PacketWriter.CreateInstance(length);
+            Stream.Write((byte)_packetID);
+            Stream.Write((short)0);
+        }
 
-		public static Packet Acquire( Packet p )
-		{
-			p.Acquire();
-			return p;
-		}
+        public static Packet SetStatic(Packet p)
+        {
+            p.SetStatic();
+            return p;
+        }
 
-		public static void Release( ref Packet p )
-		{
-			if ( p != null )
-				p.Release();
+        public static Packet Acquire(Packet p)
+        {
+            p.Acquire();
+            return p;
+        }
 
-			p = null;
-		}
+        public static void Release(ref Packet p)
+        {
+            if (p != null)
+                p.Release();
 
-		public static void Release( Packet p )
-		{
-			if ( p != null )
-				p.Release();
-		}
+            p = null;
+        }
 
-		public void SetStatic()
-		{
-			_state |= State.Static | State.Acquired;
-		}
+        public static void Release(Packet p)
+        {
+            if (p != null)
+                p.Release();
+        }
 
-		public void Acquire()
-		{
-			_state |= State.Acquired;
-		}
+        public void SetStatic()
+        {
+            _state |= State.Static | State.Acquired;
+        }
 
-		public void OnSend()
-		{
-			if ( (_state & (State.Acquired | State.Static)) == 0 )
-				Free();
-		}
+        public void Acquire()
+        {
+            _state |= State.Acquired;
+        }
 
-		private void Free()
-		{
-			if ( _compiledBuffer == null )
-				return;
+        public void OnSend()
+        {
+            if ((_state & (State.Acquired | State.Static)) == 0)
+                Free();
+        }
 
-			if ( (_state & State.Buffered) != 0 )
-				_buffers.ReleaseBuffer( _compiledBuffer );
+        private void Free()
+        {
+            if (_compiledBuffer == null)
+                return;
 
-			_state &= ~(State.Static | State.Acquired | State.Buffered);
+            if ((_state & State.Buffered) != 0)
+                _buffers.ReleaseBuffer(_compiledBuffer);
 
-			_compiledBuffer = null;
-		}
+            _state &= ~(State.Static | State.Acquired | State.Buffered);
 
-		public void Release()
-		{
-			if ( (_state & State.Acquired) != 0 )
-				Free();
-		}
+            _compiledBuffer = null;
+        }
 
-		private byte[] _compiledBuffer;
-		private int _compiledLength;
+        public void Release()
+        {
+            if ((_state & State.Acquired) != 0)
+                Free();
+        }
 
-		public byte[] Compile( bool compress, out int length )
-		{
-			if ( _compiledBuffer == null )
-			{
-				if ( (_state & State.Accessed) == 0 )
-				{
-					_state |= State.Accessed;
-				}
-				else
-				{
-					if ( (_state & State.Warned) == 0 )
-					{
-						_state |= State.Warned;
+        private byte[] _compiledBuffer;
+        private int _compiledLength;
 
-						try
-						{
+        public byte[] Compile(bool compress, out int length)
+        {
+            if (_compiledBuffer == null)
+            {
+                if ((_state & State.Accessed) == 0)
+                {
+                    _state |= State.Accessed;
+                }
+                else
+                {
+                    if ((_state & State.Warned) == 0)
+                    {
+                        _state |= State.Warned;
+
+                        try
+                        {
                             //using ( StreamWriter op = new StreamWriter( "net_opt.log", true ) )
                             //{
-                                Debug.WriteLine(string.Format("Redundant compile for packet {0}, use Acquire() and Release()", this.GetType()));
-                                Debug.WriteLine(new System.Diagnostics.StackTrace());
+                            Debug.WriteLine(string.Format("Redundant compile for packet {0}, use Acquire() and Release()", this.GetType()));
+                            Debug.WriteLine(new System.Diagnostics.StackTrace());
                             //}
-						}
-						catch
-						{
-						}
-					}
+                        }
+                        catch
+                        {
+                        }
+                    }
 
-					_compiledBuffer = new byte[0];
-					_compiledLength = 0;
+                    _compiledBuffer = new byte[0];
+                    _compiledLength = 0;
 
-					length = _compiledLength;
-					return _compiledBuffer;
-				}
+                    length = _compiledLength;
+                    return _compiledBuffer;
+                }
 
-				InternalCompile( compress );
-			}
+                InternalCompile(compress);
+            }
 
-			length = _compiledLength;
-			return _compiledBuffer;
-		}
+            length = _compiledLength;
+            return _compiledBuffer;
+        }
 
-		private void InternalCompile( bool compress )
-		{
-			if ( _length == 0 )
-			{
-				long streamLen = Stream.Length;
+        private void InternalCompile(bool compress)
+        {
+            if (_length == 0)
+            {
+                long streamLen = Stream.Length;
 
-				Stream.Seek( 1, SeekOrigin.Begin );
-				Stream.Write( (ushort)streamLen );
-			}
-			else if ( Stream.Length != _length )
-			{
-				int diff = (int)Stream.Length - _length;
+                Stream.Seek(1, SeekOrigin.Begin);
+                Stream.Write((ushort)streamLen);
+            }
+            else if (Stream.Length != _length)
+            {
+                int diff = (int)Stream.Length - _length;
 
-				Debug.WriteLine( "Packet: 0x{0:X2}: Bad packet length! ({1}{2} bytes)", _packetID, diff >= 0 ? "+" : "", diff );
-			}
+                Debug.WriteLine("Packet: 0x{0:X2}: Bad packet length! ({1}{2} bytes)", _packetID, diff >= 0 ? "+" : "", diff);
+            }
 
-			MemoryStream ms = Stream.UnderlyingStream;
+            MemoryStream ms = Stream.UnderlyingStream;
 
-			_compiledBuffer = ms.GetBuffer();
-			int length = (int)ms.Length;
+            _compiledBuffer = ms.GetBuffer();
+            int length = (int)ms.Length;
 
-			if ( _compiledBuffer != null )
-			{
-				_compiledLength = length;
+            if (_compiledBuffer != null)
+            {
+                _compiledLength = length;
 
-				byte[] old = _compiledBuffer;
+                byte[] old = _compiledBuffer;
 
-				if ( length > BufferSize || (_state & State.Static) != 0 )
-				{
-					_compiledBuffer = new byte[length];
-				}
-				else
-				{
-					_compiledBuffer = _buffers.AcquireBuffer();
-					_state |= State.Buffered;
-				}
+                if (length > BufferSize || (_state & State.Static) != 0)
+                {
+                    _compiledBuffer = new byte[length];
+                }
+                else
+                {
+                    _compiledBuffer = _buffers.AcquireBuffer();
+                    _state |= State.Buffered;
+                }
 
-				Buffer.BlockCopy( old, 0, _compiledBuffer, 0, length );
-			}
+                Buffer.BlockCopy(old, 0, _compiledBuffer, 0, length);
+            }
 
-			PacketWriter.ReleaseInstance( Stream );
-			Stream = null;
-		}
-	}
+            PacketWriter.ReleaseInstance(Stream);
+            Stream = null;
+        }
+    }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using Client.IO;
 
 namespace Client.Diagnostics
 {
@@ -36,8 +37,7 @@ namespace Client.Diagnostics
                 {
                     string directory = Path.GetDirectoryName(_filename);
 
-                    if (!Directory.Exists(directory))
-                        Directory.CreateDirectory(directory);
+                    FileSystemHelper.EnsureDirectoryExists(directory);
 
                     using (FileStream fileStream = new FileStream(_filename, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
                     {
