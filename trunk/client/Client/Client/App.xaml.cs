@@ -22,7 +22,14 @@ namespace Client
             new DebugTraceListener();
             new DebugLogTraceListener(Path.Combine(Paths.Logs, "debug.txt"));
 
-            RootVisual = new ClientControl();
+            if (InstallState == System.Windows.InstallState.Installed)
+            {
+                RootVisual = new ClientControl();
+            }
+            else
+            {
+                RootVisual = new InstallPrompt();
+            }
         }
 
         private static void Application_Exit(object sender, EventArgs e)

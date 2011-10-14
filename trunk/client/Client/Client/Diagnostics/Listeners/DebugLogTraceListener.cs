@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Client.IO;
+using System.Windows;
 
 namespace Client.Diagnostics
 {
@@ -31,6 +32,9 @@ namespace Client.Diagnostics
         {
             try
             {
+                if (!Application.Current.IsRunningOutOfBrowser)
+                    return;
+
                 object syncRoot = _lockTable[_filename];
 
                 lock (syncRoot)

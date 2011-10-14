@@ -12,9 +12,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Client.Web</RootNamespace>
     <AssemblyName>Client.Web</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <UseIISExpress>false</UseIISExpress>
     <SilverlightApplicationList>{4B97234F-9DE2-4165-9DF0-DB8DF049422B}|..\Client\Client.csproj|ClientBin|False</SilverlightApplicationList>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,28 +35,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Web.DynamicData" />
-    <Reference Include="System.Web.Entity" />
-    <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ClientBin\Client.xap" />
     <Content Include="Silverlight.js" />
-    <Content Include="ClientTestPage.aspx" />
-    <Content Include="ClientTestPage.html" />
+    <Content Include="Default.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
