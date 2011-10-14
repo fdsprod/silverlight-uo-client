@@ -7,13 +7,13 @@ namespace Client
 {
     public partial class ClientControl
     {
-        private readonly ClientGame _game;
+        private ClientGame _game;
 
         public ClientControl()
         {
             InitializeComponent();
 
-            _game = new ClientGame(myDrawingSurface);
+            _game = new ClientGame(DrawingSurface);
             _game.Run();
         }
 
@@ -21,16 +21,12 @@ namespace Client
         {
             _game.Tick(e.DeltaTime, e.TotalTime);
             e.InvalidateSurface();
-
-            Debug.WriteLine(GraphicsDeviceManager.Current.GraphicsDevice.PresentationParameters.BackBufferWidth);
         }
 
         private void OnLoad(object sender, RoutedEventArgs e)
         {
-            if (GraphicsDeviceManager.Current.RenderMode != RenderMode.Hardware)
-            {
+            if(GraphicsDeviceManager.Current.RenderMode != RenderMode.Hardware)
                 MessageBox.Show("Please activate enableGPUAcceleration=true on your Silverlight plugin page.", "Warning", MessageBoxButton.OK);
-            }
         }
     }
 }

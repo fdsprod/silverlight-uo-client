@@ -64,6 +64,12 @@
   <PropertyGroup>
     <SignManifests>false</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Client.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework" />
     <Reference Include="Microsoft.Xna.Framework.Content" />
@@ -77,6 +83,7 @@
     <Reference Include="system" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Controls.Navigation, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Windows.Xna" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Windows.Browser" />
@@ -97,6 +104,8 @@
     <Compile Include="Configuration\ConfigurationService.cs" />
     <Compile Include="Configuration\ConfigKeys.cs" />
     <Compile Include="Configuration\IConfigurationService.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\NotBoolToVisibilityConverter.cs" />
     <Compile Include="Extensions\ByteArrayExtensions.cs" />
     <Compile Include="Collections\Cache.cs" />
     <Compile Include="ClientGame.cs" />
@@ -123,6 +132,9 @@
     <Compile Include="Input\CommandBase.cs" />
     <Compile Include="Input\IRaiseCanExecuteChanged.cs" />
     <Compile Include="Input\RelayCommand.cs" />
+    <Compile Include="InstallPrompt.xaml.cs">
+      <DependentUpon>InstallPrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IO\FileSystemHelper.cs" />
     <Compile Include="IO\Paths.cs" />
     <Compile Include="Network\BufferPool.cs" />
@@ -149,6 +161,7 @@
     <Compile Include="Ultima\FileIndex.cs" />
     <Compile Include="Ultima\PixelConverter.cs" />
     <Compile Include="Ultima\Textures.cs" />
+    <Compile Include="ViewModels\ClientControlViewModel.cs" />
     <Compile Include="WeakAction.cs" />
     <Compile Include="WeakReferenceManager.cs" />
   </ItemGroup>
@@ -161,16 +174,39 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="InstallPrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Jetpack\Brushes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Jetpack\CoreStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Jetpack\Fonts.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Jetpack\Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Client.snk" />
     <None Include="Properties\AppManifest.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\OutOfBrowserSettings.xml" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <None Include="Properties\InBrowserSettings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\background.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <PropertyGroup>

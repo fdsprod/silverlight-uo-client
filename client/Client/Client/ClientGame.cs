@@ -26,6 +26,7 @@ namespace Client
         {
             base.Update(gameTime);
 
+
             scene.Update(gameTime);
         }
 
