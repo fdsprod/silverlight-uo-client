@@ -7,11 +7,86 @@
              d:DesignWidth="400"
              Loaded="OnLoad"
              mc:Ignorable="d">
-    <DrawingSurface x:Name="DrawingSurface" Draw="OnDraw">
-        <DrawingSurface.CompositionMode>
-            <OffscreenCompositionMode PreferredDepthStencilFormat="Depth16"
+    <Grid>
+        <UserControl>
+            <DrawingSurface x:Name="DrawingSurface" Draw="OnDraw">
+                <DrawingSurface.CompositionMode>
+                    <OffscreenCompositionMode PreferredDepthStencilFormat="Depth16"
                                       PreferredMultiSampleCount="2"
                                       RenderTargetUsage="PreserveContents" />
-        </DrawingSurface.CompositionMode>
-    </DrawingSurface>
+                </DrawingSurface.CompositionMode>
+            </DrawingSurface>
+        </UserControl>
+        <Border x:Name="CheckingForUpdatesPanel"
+                Width="300"
+                Height="45"
+                BorderThickness="2"
+                CornerRadius="10">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="5"
+                                  Direction="-1"
+                                  Opacity="0.5"
+                                  ShadowDepth="3" />
+            </Border.Effect>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <LinearGradientBrush.GradientStops>
+                        <GradientStopCollection>
+                            <GradientStop Offset="0" Color="#FFf4f5f6" />
+                            <GradientStop Offset="1" Color="#FFd0d6db" />
+                        </GradientStopCollection>
+                    </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Margin="5"
+                           FontSize="12"
+                           Foreground="Black"
+                           Text="Checking for updates please wait..."
+                           TextAlignment="Center"
+                           TextWrapping="Wrap" />
+                <ProgressBar Grid.Row="1" IsIndeterminate="True" Height="5" Margin="30 5 30 5" />
+            </Grid>
+        </Border>
+        <Border x:Name="UpdatedPanel"
+                Visibility="Collapsed"
+                Width="300"
+                Height="75"
+                BorderThickness="2"
+                CornerRadius="10">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="5"
+                                  Direction="-1"
+                                  Opacity="0.5"
+                                  ShadowDepth="3" />
+            </Border.Effect>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <LinearGradientBrush.GradientStops>
+                        <GradientStopCollection>
+                            <GradientStop Offset="0" Color="#FFf4f5f6" />
+                            <GradientStop Offset="1" Color="#FFd0d6db" />
+                        </GradientStopCollection>
+                    </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Margin="5"
+                           FontSize="12"
+                           Foreground="Black"
+                           Text="An update has been applied.  Please restart."
+                           TextAlignment="Center"
+                           TextWrapping="Wrap" />
+                <Button Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Content="OK" Click="Button_Click" />
+            </Grid>
+        </Border>
+    </Grid>
 </UserControl>

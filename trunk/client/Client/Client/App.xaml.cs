@@ -22,7 +22,7 @@ namespace Client
             new DebugTraceListener();
             new DebugLogTraceListener(Path.Combine(Paths.Logs, "debug.txt"));
 
-            if (InstallState == System.Windows.InstallState.Installed)
+            if (IsRunningOutOfBrowser && InstallState == System.Windows.InstallState.Installed)
             {
                 RootVisual = new ClientControl();
             }
@@ -34,6 +34,7 @@ namespace Client
 
         private static void Application_Exit(object sender, EventArgs e)
         {
+            Tracer.Verbose("Exiting...\n\n");
         }
 
         private static void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
@@ -43,6 +44,12 @@ namespace Client
                 e.Handled = true;
                 Deployment.Current.Dispatcher.BeginInvoke(() => ReportErrorToDOM(e));
             }
+
+            string errorMsg = e.ExceptionObject.Message + e.ExceptionObject.StackTrace;
+            errorMsg = errorMsg.Replace('"', '\'').Replace("\r\n", @"\n");
+
+            MessageBox.Show(errorMsg);
+            Tracer.Error(errorMsg);
         }
 
         private static void ReportErrorToDOM(ApplicationUnhandledExceptionEventArgs e)

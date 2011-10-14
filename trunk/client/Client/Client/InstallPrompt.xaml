@@ -8,7 +8,7 @@
              mc:Ignorable="d"
              Loaded="UserControl_Loaded">
     <UserControl.Background>
-        <ImageBrush ImageSource="Themes/Background.png" Stretch="Fill" />
+        <ImageBrush ImageSource="/Client;components/Themes/Background.png" Stretch="Fill" />
     </UserControl.Background>
 
     <Grid>

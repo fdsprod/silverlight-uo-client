@@ -32,7 +32,7 @@
     <LinkedServerProject>
     </LinkedServerProject>
     <InBrowserSettingsFile>Properties\InBrowserSettings.xml</InBrowserSettingsFile>
-    <RequireInBrowserElevation>true</RequireInBrowserElevation>
+    <RequireInBrowserElevation>false</RequireInBrowserElevation>
   </PropertyGroup>
   <!-- This property group is only here to support building this project using the
        MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs
@@ -68,7 +68,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Client.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework" />
@@ -106,6 +107,9 @@
     <Compile Include="Configuration\IConfigurationService.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\NotBoolToVisibilityConverter.cs" />
+    <Compile Include="UpdatingPrompt.xaml.cs">
+      <DependentUpon>UpdatingPrompt.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Extensions\ByteArrayExtensions.cs" />
     <Compile Include="Collections\Cache.cs" />
     <Compile Include="ClientGame.cs" />
@@ -161,7 +165,6 @@
     <Compile Include="Ultima\FileIndex.cs" />
     <Compile Include="Ultima\PixelConverter.cs" />
     <Compile Include="Ultima\Textures.cs" />
-    <Compile Include="ViewModels\ClientControlViewModel.cs" />
     <Compile Include="WeakAction.cs" />
     <Compile Include="WeakReferenceManager.cs" />
   </ItemGroup>
@@ -173,6 +176,10 @@
     <Page Include="ClientControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UpdatingPrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="InstallPrompt.xaml">
       <SubType>Designer</SubType>
@@ -196,7 +203,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Client.snk" />
     <None Include="Properties\AppManifest.xml" />
   </ItemGroup>
   <ItemGroup>

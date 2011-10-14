@@ -7,26 +7,10 @@ namespace Client
     {
         public static bool TryConvert<TConvertFrom, UConvertTo>(TConvertFrom convertFrom, out UConvertTo convertTo)
         {
-            convertTo = default(UConvertTo);
-            bool converted = false;
+            object to;
+            bool converted = TryConvert(typeof(TConvertFrom), convertFrom, typeof(UConvertTo), out to);
 
-            TypeConverter converter = TypeDescriptor.GetConverter(typeof(TConvertFrom));
-
-            if (converter.CanConvertTo(typeof(UConvertTo)))
-            {
-                convertTo = (UConvertTo)converter.ConvertTo(convertFrom, typeof(UConvertTo));
-                converted = true;
-            }
-            else
-            {
-                converter = TypeDescriptor.GetConverter(typeof(UConvertTo));
-
-                if (converter.CanConvertFrom(typeof(TConvertFrom)))
-                {
-                    convertTo = (UConvertTo)converter.ConvertFrom(convertFrom);
-                    converted = true;
-                }
-            }
+            convertTo = (UConvertTo)to;
 
             return converted;
         }
@@ -35,6 +19,12 @@ namespace Client
         {
             to = null;
             bool converted = false;
+
+            if (from != null && convertTo.IsEnum)
+            {
+                to = Enum.Parse(convertTo, from.ToString(), true);
+                return true;
+            }
 
             TypeConverter converter = TypeDescriptor.GetConverter(convertFrom);
 

@@ -30,11 +30,13 @@ namespace Client.Configuration
 
         private void LoadSettings()
         {
+            Tracer.Verbose("Loading configuration...");
+
             _sections.Clear();
 
             try
             {
-                XDocument document = new XDocument(File.Open(_filename, FileMode.Open));
+                XDocument document = XDocument.Load(File.Open(_filename, FileMode.Open));
 
                 foreach (XElement section in document.Root.DescendantNodes())
                 {
@@ -47,7 +49,7 @@ namespace Client.Configuration
                         {
                             try
                             {
-                                sectionTable.Add(element.Attribute("key").Value, element.Attribute("value").Value);
+                                sectionTable.Add(element.Attribute("name").Value, element.Attribute("value").Value);
                             }
                             catch (Exception e)
                             {
