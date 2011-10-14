@@ -107,6 +107,8 @@ namespace Client
 
         public void ResetElapsedTime()
         {
+            Tracer.Info("ResetElapsedTime was called");
+
             _forceElapsedTimeToZero = true;
             _drawRunningSlowly = false;
             _updatesSinceRunningSlowly1 = int.MaxValue;
@@ -117,7 +119,7 @@ namespace Client
         {
             try
             {
-                Tracer.Verbose("Initializing Engine...");
+                Tracer.Info("Initializing Engine...");
                 Initialize();
 
                 _gameTime.ElapsedGameTime = TimeSpan.Zero;
@@ -203,7 +205,7 @@ namespace Client
 
         protected virtual void Initialize()
         {
-            Tracer.Verbose("Loading Content...");
+            Tracer.Info("Loading Content...");
             LoadContent();
         }
 
@@ -251,7 +253,7 @@ namespace Client
             {
                 lock (this)
                 {
-                    Tracer.Verbose("Unloading Content...");
+                    Tracer.Info("Unloading Content...");
                     UnloadContent();
 
                     if (_drawingSurface != null)

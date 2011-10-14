@@ -7,13 +7,10 @@ namespace Client.Configuration
     public sealed class ConfigurationService : IConfigurationService
     {
         private readonly ConfigFile _configFile;
-        private readonly Engine _engine;
 
-        public ConfigurationService(Engine engine)
+        public ConfigurationService()
         {
             string file = Paths.ConfigFile;
-
-            _engine = engine;
             _configFile = new ConfigFile(file);
 
             if (!File.Exists(file))
@@ -25,7 +22,11 @@ namespace Client.Configuration
             SetValue(ConfigSections.Graphics, ConfigKeys.Width, 1024);
             SetValue(ConfigSections.Graphics, ConfigKeys.Height, 768);
 
+#if DEBUG
+            SetValue(ConfigSections.Debug, ConfigKeys.LogLevel, TraceLevels.Verbose);
+#elif
             SetValue(ConfigSections.Debug, ConfigKeys.LogLevel, TraceLevels.Warning);
+#endif
         }
 
         public T GetValue<T>(string section, string key)

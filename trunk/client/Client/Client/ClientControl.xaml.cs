@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Graphics;
 
+using Client.Configuration;
 using Client.Diagnostics;
 
 namespace Client
@@ -29,12 +30,17 @@ namespace Client
                 return;
             }
 
-            Tracer.Verbose("Checking for updates...");
+            IConfigurationService configurationService = new ConfigurationService();
+            IRenderer renderer = new Renderer();
+
+            Tracer.TraceLevel = configurationService.GetValue<TraceLevels>(ConfigSections.Debug, ConfigKeys.LogLevel);
+            Tracer.Info("Checking for updates...");
 
             Application.Current.CheckAndDownloadUpdateCompleted += Current_CheckAndDownloadUpdateCompleted;
             Application.Current.CheckAndDownloadUpdateAsync();
 
             _game = new ClientGame(DrawingSurface);
+            _game.Services.AddService(typeof(IConfigurationService), configurationService);
             _game.Run();
         }
 
@@ -50,7 +56,7 @@ namespace Client
 
             if (e.UpdateAvailable)
             {
-                Tracer.Verbose("Update available.");
+                Tracer.Info("Update available.");
                 UpdatedPanel.Visibility = Visibility.Visible;
             }
         }

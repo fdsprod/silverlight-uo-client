@@ -19,7 +19,7 @@ namespace Client
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            new DebugTraceListener();
+            new DebugTraceListener { TraceLevel = TraceLevels.Verbose };
             new DebugLogTraceListener(Path.Combine(Paths.Logs, "debug.txt"));
 
             if (IsRunningOutOfBrowser && InstallState == System.Windows.InstallState.Installed)
@@ -34,7 +34,7 @@ namespace Client
 
         private static void Application_Exit(object sender, EventArgs e)
         {
-            Tracer.Verbose("Exiting...\n\n");
+            Tracer.Info("Exiting...\n\n");
         }
 
         private static void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
