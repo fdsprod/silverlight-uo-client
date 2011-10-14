@@ -5,5 +5,6 @@ namespace Client.Configuration
     {
         public const string Graphics = "graphics";
         public const string Client = "client";
+        public const string Debug = "debug";
     }
 }

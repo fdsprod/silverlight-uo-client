@@ -3,7 +3,4 @@
 >
   <Deployment.Parts>
   </Deployment.Parts>
-  <Deployment.OutOfBrowserSettings>
-    <OutOfBrowserSettings ShortName="Silverlight UO Client" />
-  </Deployment.OutOfBrowserSettings>
 </Deployment>

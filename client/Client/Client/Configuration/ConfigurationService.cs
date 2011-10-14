@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Client.Diagnostics;
 using Client.IO;
 
 namespace Client.Configuration
@@ -23,6 +24,8 @@ namespace Client.Configuration
         {
             SetValue(ConfigSections.Graphics, ConfigKeys.Width, 1024);
             SetValue(ConfigSections.Graphics, ConfigKeys.Height, 768);
+
+            SetValue(ConfigSections.Debug, ConfigKeys.LogLevel, TraceLevels.Warning);
         }
 
         public T GetValue<T>(string section, string key)
