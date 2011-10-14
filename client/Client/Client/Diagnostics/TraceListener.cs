@@ -24,7 +24,7 @@ namespace Client.Diagnostics
 
             TraceMessage message = e.TraceMessage;
 
-            if (TraceLevel.HasValue && Tracer.TraceLevel < message.Type)
+            if (!TraceLevel.HasValue && message.Type < Tracer.TraceLevel)
                 return;
 
             if (TraceLevel.HasValue && message.Type < TraceLevel)

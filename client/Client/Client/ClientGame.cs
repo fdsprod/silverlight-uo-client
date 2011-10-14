@@ -1,6 +1,5 @@
 ﻿using System.Windows.Controls;
-using Client.Configuration;
-using Client.Diagnostics;
+
 
 namespace Client
 {
@@ -17,10 +16,6 @@ namespace Client
         protected override void Initialize()
         {
             base.Initialize();
-
-            IConfigurationService configurationService = new ConfigurationService(this);
-
-            Tracer.TraceLevel = configurationService.GetValue<TraceLevels>(ConfigSections.Debug, ConfigKeys.LogLevel);
 
             scene = new Scene(DrawingSurface);
         }

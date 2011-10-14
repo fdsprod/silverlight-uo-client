@@ -107,6 +107,8 @@
     <Compile Include="Configuration\IConfigurationService.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\NotBoolToVisibilityConverter.cs" />
+    <Compile Include="GameState.cs" />
+    <Compile Include="Graphics\Renderer.cs" />
     <Compile Include="UpdatingPrompt.xaml.cs">
       <DependentUpon>UpdatingPrompt.xaml</DependentUpon>
     </Compile>
@@ -213,6 +215,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Themes\background.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Managers\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <PropertyGroup>

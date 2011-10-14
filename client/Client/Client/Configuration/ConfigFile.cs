@@ -30,7 +30,7 @@ namespace Client.Configuration
 
         private void LoadSettings()
         {
-            Tracer.Verbose("Loading configuration...");
+            Tracer.Info("Loading configuration...");
 
             _sections.Clear();
 
