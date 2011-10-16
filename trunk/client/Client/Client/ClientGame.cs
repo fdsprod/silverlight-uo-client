@@ -17,14 +17,13 @@ namespace Client
         {
             base.Initialize();
 
-            scene = new Scene(DrawingSurface);
+            scene = new Scene(this);
         }
 
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-
+            
             scene.Update(gameTime);
         }
 

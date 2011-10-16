@@ -2,14 +2,20 @@
 using System.IO;
 using System.Windows.Graphics;
 using Microsoft.Xna.Framework.Graphics;
+using Client.Configuration;
 
 namespace Client.Ultima
 {
     public class Textures
     {
-        private static readonly FileIndex _fileIndex = new FileIndex("texidx.mul", "texmaps.mul", 0x1000, 10);
+        private readonly FileIndex _fileIndex;
 
-        public static Texture2D CreateTexture(int index)
+        public Textures(Engine engine)
+        {
+            _fileIndex = new FileIndex(engine, "texidx.mul", "texmaps.mul", 0x1000,  10);
+        }
+
+        public Texture2D CreateTexture(int index)
         {
             int length, extra;
             bool patched;

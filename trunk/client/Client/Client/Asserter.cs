@@ -9,13 +9,13 @@ namespace Client
 
         public static void Assert(bool logicalExpression, string message)
         {
-            if (logicalExpression == false)
+            if (!logicalExpression)
                 throw new ArgumentException(message);
         }
 
         public static void Assert(string parameterName, bool logicalExpression, object actualValue, string message)
         {
-            if (logicalExpression == false)
+            if (!logicalExpression)
             {
                 if (actualValue == null)
                     throw (new ArgumentNullException(parameterName, message));
@@ -233,6 +233,12 @@ namespace Client
         {
             if (!File.Exists(path))
                 throw new FileNotFoundException(path);
+        }
+
+        public static void AssertDirectoryExists(string directory)
+        {
+            if (!Directory.Exists(directory))
+                throw new DirectoryNotFoundException(directory);
         }
     }
 }

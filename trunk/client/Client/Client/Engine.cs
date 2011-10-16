@@ -67,6 +67,12 @@ namespace Client
             }
         }
 
+        public Control RootControl
+        {
+            get;
+            private set;
+        }
+
         public Engine(DrawingSurface drawingSurface)
         {
             Asserter.AssertIsNotNull(drawingSurface, "drawingSurface");
@@ -81,17 +87,8 @@ namespace Client
             _gameTime = new GameTime();
             _gameServices = new GameServiceContainer();
 
-            Control rootControl = (Control)drawingSurface.Parent;
-
-            rootControl.KeyDown += OnKeyDown;
-            rootControl.KeyUp += OnKeyUp;
-            rootControl.MouseEnter += OnMouseEnter;
-            rootControl.MouseLeave += OnMouseLeave;
-            rootControl.MouseLeftButtonDown += OnMouseLeftButtonDown;
-            rootControl.MouseLeftButtonUp += OnMouseLeftButtonUp;
-            rootControl.MouseRightButtonDown += OnMouseRightButtonDown;
-            rootControl.MouseRightButtonUp += OnMouseRightButtonUp;
-            rootControl.MouseWheel += OnMouseWheel;
+            RootControl = (Control)drawingSurface.Parent;
+            Asserter.AssertIsNotNull(RootControl, "RootControl");
         }
 
         ~Engine()
