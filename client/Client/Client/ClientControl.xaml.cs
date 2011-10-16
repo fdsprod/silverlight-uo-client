@@ -4,6 +4,8 @@ using System.Windows.Graphics;
 
 using Client.Configuration;
 using Client.Diagnostics;
+using Client.Graphics;
+using Client.Input;
 
 namespace Client
 {
@@ -33,14 +35,19 @@ namespace Client
             IConfigurationService configurationService = new ConfigurationService();
             IRenderer renderer = new Renderer();
 
-            Tracer.TraceLevel = configurationService.GetValue<TraceLevels>(ConfigSections.Debug, ConfigKeys.LogLevel);
+            Tracer.TraceLevel = configurationService.GetValue<TraceLevels>(ConfigSections.Debug, ConfigKeys.DebugLogLevel);
             Tracer.Info("Checking for updates...");
 
             Application.Current.CheckAndDownloadUpdateCompleted += Current_CheckAndDownloadUpdateCompleted;
             Application.Current.CheckAndDownloadUpdateAsync();
 
             _game = new ClientGame(DrawingSurface);
+            
+            IInputService inputService = new InputService(_game);
+
             _game.Services.AddService(typeof(IConfigurationService), configurationService);
+            _game.Services.AddService(typeof(IInputService), inputService);
+
             _game.Run();
         }
 

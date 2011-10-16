@@ -13,20 +13,11 @@ namespace Client
         readonly SilverlightEffect mySilverlightEffect;
         readonly SilverlightEffectParameter textureParameter;
         readonly SilverlightEffectParameter worldViewProjectionParameter;
-        readonly SilverlightEffectParameter worldParameter;
-        readonly SilverlightEffectParameter lightPositionParameter;
+        readonly SilverlightEffectParameter lightDirectionParameter;
 
         public int VerticesCount { get; private set; }
 
         public int FaceCount { get; private set; }
-
-        public Matrix World
-        {
-            set
-            {
-                worldParameter.SetValue(value);
-            }
-        }
 
         public Matrix WorldViewProjection
         {
@@ -36,11 +27,11 @@ namespace Client
             }
         }
 
-        public Vector3 LightPosition
+        public Vector3 LightDirection
         {
             set
             {
-                lightPositionParameter.SetValue(value);
+                lightDirectionParameter.SetValue(value);
             }
         }
 
@@ -58,11 +49,10 @@ namespace Client
        
             // Cache effect parameters
             worldViewProjectionParameter = mySilverlightEffect.Parameters["WorldViewProjection"];
-            worldParameter = mySilverlightEffect.Parameters["World"];
-            lightPositionParameter = mySilverlightEffect.Parameters["LightPosition"];
+            lightDirectionParameter = mySilverlightEffect.Parameters["LightDirection"];
 
             // Init static parameters
-            this.LightPosition = new Vector3(1, 1, -10);
+            this.LightDirection = new Vector3(0, 1, -1);
 
             // Temporary lists
             List<VertexPositionNormalTexture> vertices = new List<VertexPositionNormalTexture>();

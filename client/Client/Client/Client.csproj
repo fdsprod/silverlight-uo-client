@@ -105,10 +105,28 @@
     <Compile Include="Configuration\ConfigurationService.cs" />
     <Compile Include="Configuration\ConfigKeys.cs" />
     <Compile Include="Configuration\IConfigurationService.cs" />
+    <Compile Include="Controls\ConfigurationControl.xaml.cs">
+      <DependentUpon>ConfigurationControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\NotBoolToVisibilityConverter.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="Graphics\Camera2D.cs" />
+    <Compile Include="Graphics\GooEee\GooEeeElement.cs" />
+    <Compile Include="Graphics\GooEee\GooEeeManager.cs" />
+    <Compile Include="Graphics\GraphicsDeviceExtensions.cs" />
+    <Compile Include="Graphics\IRenderer.cs" />
+    <Compile Include="Graphics\Particles\Particle.cs" />
     <Compile Include="Graphics\Renderer.cs" />
+    <Compile Include="Input\IInputService.cs" />
+    <Compile Include="Input\KeyStateEventArgs.cs" />
+    <Compile Include="Input\MouseButton.cs" />
+    <Compile Include="Input\MouseStateEventArgs.cs" />
+    <Compile Include="Item.cs" />
+    <Compile Include="Managers\GooEeeManager.cs" />
+    <Compile Include="Input\InputService.cs" />
+    <Compile Include="Mobile.cs" />
+    <Compile Include="Serial.cs" />
     <Compile Include="UpdatingPrompt.xaml.cs">
       <DependentUpon>UpdatingPrompt.xaml</DependentUpon>
     </Compile>
@@ -169,6 +187,7 @@
     <Compile Include="Ultima\Textures.cs" />
     <Compile Include="WeakAction.cs" />
     <Compile Include="WeakReferenceManager.cs" />
+    <Compile Include="World.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -176,6 +195,10 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Page Include="ClientControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ConfigurationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -217,7 +240,6 @@
     <Resource Include="Themes\background.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Managers\" />
     <Folder Include="Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />

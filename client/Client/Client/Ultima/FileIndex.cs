@@ -1,4 +1,5 @@
 using System.IO;
+using Client.Configuration;
 
 namespace Client.Ultima
 {
@@ -80,14 +81,22 @@ namespace Client.Ultima
                 _stream = new FileStream(_mulPath, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
 
-        public FileIndex(string idxFile, string mulFile, int length, int file)
+        public FileIndex(Engine engine, string idxFile, string mulFile, int length, int file)
         {
+            IConfigurationService configurationService = engine.Services.GetService<IConfigurationService>();
+
+            string ultimaOnlineDirectory = configurationService.GetValue<string>(ConfigSections.Client, ConfigKeys.UltimaOnlineDirectory);
+
+            Asserter.AssertIsNotNullOrEmpty(ultimaOnlineDirectory, "ultimaOnlineDirectory");
+            Asserter.AssertDirectoryExists(ultimaOnlineDirectory);
+
             _index = new Entry3D[length];
 
-            //TODO: Get the path from a setting.... 
-            //eventually this should be able to be streamed and this class wont be needed.
-            _indexPath = Path.Combine(@"C:\Games\Ultima Online Stygian Abyss Classic", idxFile);
-            _mulPath = Path.Combine(@"C:\Games\Ultima Online Stygian Abyss Classic", mulFile);
+            _indexPath = Path.Combine(ultimaOnlineDirectory, idxFile);
+            _mulPath = Path.Combine(ultimaOnlineDirectory, mulFile);
+
+            Asserter.AssertFileExists(_indexPath);
+            Asserter.AssertFileExists(_mulPath);
 
             if (_indexPath != null && _mulPath != null)
             {

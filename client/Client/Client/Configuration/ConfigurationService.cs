@@ -19,12 +19,12 @@ namespace Client.Configuration
 
         public void RestoreDefaults()
         {
-            SetValue(ConfigSections.Graphics, ConfigKeys.Width, 1024);
-            SetValue(ConfigSections.Graphics, ConfigKeys.Height, 768);
+            SetValue(ConfigSections.Graphics, ConfigKeys.GraphicsWidth, 1024);
+            SetValue(ConfigSections.Graphics, ConfigKeys.GraphicsHeight, 768);
 
 #if DEBUG
-            SetValue(ConfigSections.Debug, ConfigKeys.LogLevel, TraceLevels.Verbose);
-#elif
+            SetValue(ConfigSections.Debug, ConfigKeys.DebugLogLevel, TraceLevels.Verbose);
+#else
             SetValue(ConfigSections.Debug, ConfigKeys.LogLevel, TraceLevels.Warning);
 #endif
         }

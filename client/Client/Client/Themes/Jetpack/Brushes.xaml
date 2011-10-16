@@ -13,6 +13,15 @@
         <GradientStop Offset="1" Color="#FF75A20A" />
     </LinearGradientBrush>
 
+    <LinearGradientBrush x:Key="GradientBackground" StartPoint="0,0" EndPoint="0,1">
+        <LinearGradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Offset="0" Color="#FFf4f5f6" />
+                <GradientStop Offset="1" Color="#FFd0d6db" />
+            </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+    
     <LinearGradientBrush x:Key="ColorAccentBrush" StartPoint="0.5,0" EndPoint="0.5,1">
         <GradientStop Offset="0" Color="#BCD742" />
         <GradientStop Offset="1" Color="#91B006" />
