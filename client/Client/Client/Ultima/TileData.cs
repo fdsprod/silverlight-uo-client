@@ -1,7 +1,6 @@
-﻿using System;
-using Client.Text;
-using System.IO;
+﻿using System.IO;
 using Client.Configuration;
+using Client.Text;
 
 namespace Client.Ultima
 {

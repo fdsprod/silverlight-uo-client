@@ -1,13 +1,4 @@
 ﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 
 namespace Client.Ultima
 {
@@ -15,47 +6,35 @@ namespace Client.Ultima
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 1)]
     public struct Tile : IComparable
     {
-        internal short m_ID;
-        internal sbyte m_Z;
+        internal short _id;
+        internal sbyte _z;
 
         public int ID
         {
-            get
-            {
-                return m_ID;
-            }
+            get { return _id; }
         }
 
         public int Z
         {
-            get
-            {
-                return m_Z;
-            }
-            set
-            {
-                m_Z = (sbyte)value;
-            }
+            get { return _z; }
+            set { _z = (sbyte)value; }
         }
 
         public bool Ignored
         {
-            get
-            {
-                return (m_ID == 2 || m_ID == 0x1DB || (m_ID >= 0x1AE && m_ID <= 0x1B5));
-            }
+            get { return (_id == 2 || _id == 0x1DB || (_id >= 0x1AE && _id <= 0x1B5)); }
         }
 
         public Tile(short id, sbyte z)
         {
-            m_ID = id;
-            m_Z = z;
+            _id = id;
+            _z = z;
         }
 
         public void Set(short id, sbyte z)
         {
-            m_ID = id;
-            m_Z = z;
+            _id = id;
+            _z = z;
         }
 
         public int CompareTo(object x)
@@ -68,22 +47,25 @@ namespace Client.Ultima
 
             Tile a = (Tile)x;
 
-            if (m_Z > a.m_Z)
+            if (_z > a._z)
                 return 1;
-            else if (a.m_Z > m_Z)
+
+            if (a._z > _z)
                 return -1;
 
-            ItemData ourData = TileData.Instance.ItemTable[m_ID & 0x3FFF];
-            ItemData theirData = TileData.Instance.ItemTable[a.m_ID & 0x3FFF];
+            ItemData ourData = TileData.Instance.ItemTable[_id & 0x3FFF];
+            ItemData theirData = TileData.Instance.ItemTable[a._id & 0x3FFF];
 
             if (ourData.Height > theirData.Height)
                 return 1;
-            else if (theirData.Height > ourData.Height)
+
+            if (theirData.Height > ourData.Height)
                 return -1;
 
             if (ourData.Background && !theirData.Background)
                 return -1;
-            else if (theirData.Background && !ourData.Background)
+
+            if (theirData.Background && !ourData.Background)
                 return 1;
 
             return 0;

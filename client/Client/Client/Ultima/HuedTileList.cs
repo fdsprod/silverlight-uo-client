@@ -1,57 +1,44 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-
+﻿
 namespace Client.Ultima
 {
     public class HuedTileList
     {
-        private HuedTile[] m_Tiles;
-        private int m_Count;
-
-        public HuedTileList()
-        {
-            m_Tiles = new HuedTile[8];
-            m_Count = 0;
-        }
+        private HuedTile[] _tiles;
+        private int _count;
 
         public int Count
         {
-            get
-            {
-                return m_Count;
-            }
+            get { return _count; }
+        }
+
+        public HuedTileList()
+        {
+            _tiles = new HuedTile[8];
+            _count = 0;
         }
 
         public void Add(short id, short hue, sbyte z)
         {
-            if ((m_Count + 1) > m_Tiles.Length)
+            if ((_count + 1) > _tiles.Length)
             {
-                HuedTile[] old = m_Tiles;
-                m_Tiles = new HuedTile[old.Length * 2];
+                HuedTile[] old = _tiles;
+                _tiles = new HuedTile[old.Length * 2];
 
                 for (int i = 0; i < old.Length; ++i)
-                    m_Tiles[i] = old[i];
+                    _tiles[i] = old[i];
             }
 
-            m_Tiles[m_Count++].Set(id, hue, z);
+            _tiles[_count++].Set(id, hue, z);
         }
 
         public HuedTile[] ToArray()
         {
-            HuedTile[] tiles = new HuedTile[m_Count];
+            HuedTile[] tiles = new HuedTile[_count];
 
-            for (int i = 0; i < m_Count; ++i)
-                tiles[i] = m_Tiles[i];
+            for (int i = 0; i < _count; ++i)
+                tiles[i] = _tiles[i];
 
-            m_Count = 0;
+            _count = 0;
 
             return tiles;
         }

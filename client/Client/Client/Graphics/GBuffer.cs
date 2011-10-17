@@ -1,15 +1,5 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
+﻿using System.Windows;
 using Microsoft.Xna.Framework.Graphics;
-using Client.Graphics.Shaders;
 
 namespace Client.Graphics
 {
@@ -55,7 +45,7 @@ namespace Client.Graphics
         {
             _engine = engine;
             _engine.DrawingSurface.SizeChanged += new SizeChangedEventHandler(OnDrawingSurfaceSizeChanged);
-            
+
             InitializeTargets();
         }
 
@@ -91,7 +81,7 @@ namespace Client.Graphics
         {
             _engine.GraphicsDevice.SetRenderTargets(_diffuseTarget, _normalTarget);
         }
-        
+
         public void BeginLightingPass()
         {
             _engine.GraphicsDevice.SetRenderTargets(_lightingTarget);

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Net;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
 
 namespace Client.Graphics.Shaders
 {
     public class DeferredRenderShader : ShaderBase
     {
-        private SilverlightEffectParameter _worldViewProjectionParamater;
+        private readonly SilverlightEffectParameter _worldViewProjectionParamater;
 
         public Matrix WorldViewProjection
         {

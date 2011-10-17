@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Windows.Controls;
 using System.Windows.Graphics;
+using Client.Graphics;
+using Client.Graphics.Shaders;
+using Client.Input;
+using Client.Ultima;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Client.Graphics;
-using Client.Input;
-using Client.Ultima;
-using Client.Graphics.Shaders;
 
 namespace Client
 {
@@ -49,7 +47,7 @@ namespace Client
             _camera = new Camera2D(engine);
             _camera.NearClip = -1000;
             _camera.FarClip = 1000;
-            
+
             _contentManager = new ContentManager(null)
             {
                 RootDirectory = "Content"
@@ -77,7 +75,7 @@ namespace Client
             _renderShader = new DeferredRenderShader(engine);
             _pointLightShader = new PointLightShader(engine);
             _combineShader = new CombineShader(engine);
-            _clearPass = new ClearShader(engine);            
+            _clearPass = new ClearShader(engine);
         }
 
         void _inputService_KeyDown(object sender, KeyStateEventArgs e)
@@ -95,7 +93,7 @@ namespace Client
 
         void _inputService_MouseMove(object sender, MouseStateEventArgs e)
         {
-            if(_inputService.IsMouseDown(MouseButton.Left))
+            if (_inputService.IsMouseDown(MouseButton.Left))
                 _camera.Position += e.PositionDelta;
         }
 
@@ -146,7 +144,7 @@ namespace Client
             _gBuffer.End();
 
             PresentationParameters pp = GraphicsDevice.PresentationParameters;
-                        
+
             GraphicsDevice.Textures[0] = _gBuffer.NormalTexture;
 
             _gBuffer.BeginLightingPass();
@@ -161,7 +159,6 @@ namespace Client
 
             _renderer.DrawQuad(-Vector2.One, Vector2.One);
 
-            _combineShader
             _spriteBatch.Begin();
             _spriteBatch.DrawString(_font, "Press Up/Down arrows to cycle through the textures", new Vector2(24, 24), Color.Black);
             _spriteBatch.End();

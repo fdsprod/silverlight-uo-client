@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.IO;
+﻿using System.IO;
 using Client.Configuration;
 
 namespace Client.Ultima
@@ -25,7 +22,7 @@ namespace Client.Ultima
 
         private readonly int _blockWidth, _blockHeight;
         private readonly int _width, _height;
-        
+
         public int BlockWidth
         {
             get { return _blockWidth; }
@@ -98,9 +95,9 @@ namespace Client.Ultima
             _invalidLandBlock = new Tile[196];
 
             _landTiles = new Tile[_blockWidth][][];
-            _staticTiles = new HuedTile[_blockWidth][][][][];            
+            _staticTiles = new HuedTile[_blockWidth][][][][];
         }
-        
+
         public HuedTile[][][] GetStaticBlock(int x, int y)
         {
             if (x < 0 || y < 0 || x >= _blockWidth || y >= _blockHeight || _staticsStream == null || _indexStream == null)
@@ -139,7 +136,7 @@ namespace Client.Ultima
 
             return tiles[((y & 0x7) << 3) + (x & 0x7)];
         }
-        
+
         private unsafe HuedTile[][][] ReadStaticBlock(int x, int y)
         {
             _indexReader.BaseStream.Seek(((x * _blockHeight) + y) * 12, SeekOrigin.Begin);
@@ -162,18 +159,18 @@ namespace Client.Ultima
             {
                 byte[] buffer = new byte[length];
                 _staticsStream.Read(buffer, 0, buffer.Length);
-                
-                using(MemoryStream stream = new MemoryStream(buffer))
+
+                using (MemoryStream stream = new MemoryStream(buffer))
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
                     StaticTile* ptr = pTiles;
                     for (int i = 0; i < 64; i++)
                     {
-                        ptr->m_ID = reader.ReadInt16();
-                        ptr->m_X = reader.ReadByte();
-                        ptr->m_Y = reader.ReadByte();
-                        ptr->m_Z = reader.ReadSByte();
-                        ptr->m_Hue = reader.ReadInt16();
+                        ptr->ID = reader.ReadInt16();
+                        ptr->X = reader.ReadByte();
+                        ptr->Y = reader.ReadByte();
+                        ptr->Z = reader.ReadSByte();
+                        ptr->Hue = reader.ReadInt16();
                     }
                 }
 
@@ -196,7 +193,7 @@ namespace Client.Ultima
 
                 while (pCur < pEnd)
                 {
-                    lists[pCur->m_X & 0x7][pCur->m_Y & 0x7].Add((short)((pCur->m_ID & 0x3FFF) + 0x4000), pCur->m_Hue, pCur->m_Z);
+                    lists[pCur->X & 0x7][pCur->Y & 0x7].Add((short)((pCur->ID & 0x3FFF) + 0x4000), pCur->Hue, pCur->Z);
                     ++pCur;
                 }
 
@@ -225,14 +222,14 @@ namespace Client.Ultima
                 byte[] buffer = new byte[192];
                 _mapStream.Read(buffer, 0, buffer.Length);
 
-                using(MemoryStream stream = new MemoryStream(buffer))
-                using(BinaryReader reader = new BinaryReader(stream))
+                using (MemoryStream stream = new MemoryStream(buffer))
+                using (BinaryReader reader = new BinaryReader(stream))
                 {
                     Tile* ptr = pTiles;
                     for (int i = 0; i < 64; i++)
                     {
-                        ptr->m_ID = reader.ReadInt16();
-                        ptr->m_Z = reader.ReadSByte();
+                        ptr->_id = reader.ReadInt16();
+                        ptr->_z = reader.ReadSByte();
                     }
                 }
             }

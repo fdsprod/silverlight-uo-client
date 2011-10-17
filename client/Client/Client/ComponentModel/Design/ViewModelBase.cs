@@ -62,9 +62,7 @@ namespace Client.ComponentModel.Design
             where T : class
         {
             if (canExecute == null)
-            {
-                canExecute = (o) => true;
-            }
+                canExecute = o => true;
 
             CommandBase command = new RelayCommand<T>(execute, canExecute);
 

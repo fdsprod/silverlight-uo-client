@@ -36,30 +36,33 @@ namespace Client.Configuration
 
             try
             {
-                XDocument document = XDocument.Load(File.Open(_filename, FileMode.Open));
-
-                foreach (XElement section in document.Root.DescendantNodes())
+                using (Stream stream = File.Open(_filename, FileMode.Open))
                 {
-                    try
-                    {
-                        Dictionary<string, string> sectionTable = new Dictionary<string, string>();
-                        _sections.Add(section.Attribute("name").Value, sectionTable);
+                    XDocument document = XDocument.Load(stream);
 
-                        foreach (XElement element in section.DescendantNodes())
+                    foreach (XElement section in document.Root.DescendantNodes())
+                    {
+                        try
                         {
-                            try
+                            Dictionary<string, string> sectionTable = new Dictionary<string, string>();
+                            _sections.Add(section.Attribute("name").Value, sectionTable);
+
+                            foreach (XElement element in section.DescendantNodes())
                             {
-                                sectionTable.Add(element.Attribute("name").Value, element.Attribute("value").Value);
-                            }
-                            catch (Exception e)
-                            {
-                                Tracer.Error(e);
+                                try
+                                {
+                                    sectionTable.Add(element.Attribute("name").Value, element.Attribute("value").Value);
+                                }
+                                catch (Exception e)
+                                {
+                                    Tracer.Error(e);
+                                }
                             }
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        Tracer.Error(e);
+                        catch (Exception e)
+                        {
+                            Tracer.Error(e);
+                        }
                     }
                 }
             }
