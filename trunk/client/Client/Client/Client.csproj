@@ -42,6 +42,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Bin\Debug</OutputPath>
@@ -53,6 +54,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <OutputPath>Bin\Release</OutputPath>
     <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
@@ -112,6 +114,7 @@
     <Compile Include="Converters\NotBoolToVisibilityConverter.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="Graphics\Camera2D.cs" />
+    <Compile Include="Graphics\GBuffer.cs" />
     <Compile Include="Graphics\GooEee\GooEeeElement.cs" />
     <Compile Include="Graphics\GooEee\GooEeeManager.cs" />
     <Compile Include="Graphics\GraphicsDeviceExtensions.cs" />
@@ -123,10 +126,20 @@
     <Compile Include="Input\MouseButton.cs" />
     <Compile Include="Input\MouseStateEventArgs.cs" />
     <Compile Include="Item.cs" />
-    <Compile Include="Managers\GooEeeManager.cs" />
     <Compile Include="Input\InputService.cs" />
     <Compile Include="Mobile.cs" />
     <Compile Include="Serial.cs" />
+    <Compile Include="Ultima\HuedTile.cs" />
+    <Compile Include="Ultima\HuedTileList.cs" />
+    <Compile Include="Ultima\ItemData.cs" />
+    <Compile Include="Ultima\LandData.cs" />
+    <Compile Include="Ultima\Maps.cs" />
+    <Compile Include="Ultima\StaticTile.cs" />
+    <Compile Include="Ultima\Tile.cs" />
+    <Compile Include="Ultima\TileData.cs" />
+    <Compile Include="Ultima\TileFlag.cs" />
+    <Compile Include="Ultima\TileList.cs" />
+    <Compile Include="Ultima\TileMatrix.cs" />
     <Compile Include="UpdatingPrompt.xaml.cs">
       <DependentUpon>UpdatingPrompt.xaml</DependentUpon>
     </Compile>
@@ -240,7 +253,7 @@
     <Resource Include="Themes\background.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Services\" />
+    <Folder Include="Engine\Shaders\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <PropertyGroup>

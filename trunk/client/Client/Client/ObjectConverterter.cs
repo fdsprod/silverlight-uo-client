@@ -20,6 +20,12 @@ namespace Client
             to = null;
             bool converted = false;
 
+            if(convertFrom == convertTo)
+            {
+                to = from;
+                return true;
+            }
+
             if (from != null && convertTo.IsEnum)
             {
                 to = Enum.Parse(convertTo, from.ToString(), true);

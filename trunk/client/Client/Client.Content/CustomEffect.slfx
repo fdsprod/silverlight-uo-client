@@ -45,7 +45,7 @@ float4 mainPS(VS_OUTPUT In) : COLOR
 	float4 color = tex2D(TextureSampler, In.texCoords);
 
 	// Final color
-	return float4(color.rgb * ndl * 2, 1);
+	return float4(color.rgb, 1);
 }
 
 // Technique
