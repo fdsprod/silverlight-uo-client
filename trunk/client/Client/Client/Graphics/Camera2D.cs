@@ -1,16 +1,15 @@
-﻿
-
+﻿using System.Windows;
 using Microsoft.Xna.Framework;
-using System.Windows;
+
 namespace Client.Graphics
 {
     public class Camera2D
     {
-        private Engine _engine;
+        private readonly Engine _engine;
 
         private int _width;
         private int _height;
-        private int _nearClip = 0;
+        private int _nearClip;
         private int _farClip = 1;
         private bool _projectionDirty;
         private bool _transformDirty;

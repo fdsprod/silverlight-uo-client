@@ -1,15 +1,13 @@
-﻿using System;
-using System.Net;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
 
 namespace Client.Graphics.Shaders
 {
     public class CombineShader : ShaderBase
     {
-        private SilverlightEffectParameter _worldViewProjectionParamater;
-        private SilverlightEffectParameter _ambientLightColorParameter;
-        private SilverlightEffectParameter _ambientLightPowerParameter;
+        private readonly SilverlightEffectParameter _worldViewProjectionParamater;
+        private readonly SilverlightEffectParameter _ambientLightColorParameter;
+        private readonly SilverlightEffectParameter _ambientLightPowerParameter;
 
         public Matrix WorldViewProjection
         {

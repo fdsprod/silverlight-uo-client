@@ -58,13 +58,13 @@ namespace Client.Collections
             }
         }
 
-        private class CacheItem<U> : IDisposable
+        private class CacheItem<TValueType> : IDisposable
         {
-            private U _value;
+            private TValueType _value;
             private DateTime _lastAccess;
-            private TimeSpan _timeToExpire;
+            private readonly TimeSpan _timeToExpire;
 
-            public U Value
+            public TValueType Value
             {
                 get
                 {
@@ -78,7 +78,7 @@ namespace Client.Collections
                 }
             }
 
-            public CacheItem(U value, TimeSpan timeToExpire)
+            public CacheItem(TValueType value, TimeSpan timeToExpire)
             {
                 _value = value;
                 _lastAccess = DateTime.Now;

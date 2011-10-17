@@ -1,20 +1,18 @@
-﻿using System;
-using System.Net;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
 
 namespace Client.Graphics.Shaders
 {
     public class PointLightShader : ShaderBase
     {
-        private SilverlightEffectParameter _worldViewProjectionParamater;
-        private SilverlightEffectParameter _screenSizeParamater;
-        private SilverlightEffectParameter _lightStrengthParamater;
-        private SilverlightEffectParameter _lightDecayParamater;
-        private SilverlightEffectParameter _lightPositionParamater;
-        private SilverlightEffectParameter _lightColorParamater;
-        private SilverlightEffectParameter _lightRadiusParamater;
-        private SilverlightEffectParameter _specularStrengthParamater;
+        private readonly SilverlightEffectParameter _worldViewProjectionParamater;
+        private readonly SilverlightEffectParameter _screenSizeParamater;
+        private readonly SilverlightEffectParameter _lightStrengthParamater;
+        private readonly SilverlightEffectParameter _lightDecayParamater;
+        private readonly SilverlightEffectParameter _lightPositionParamater;
+        private readonly SilverlightEffectParameter _lightColorParamater;
+        private readonly SilverlightEffectParameter _lightRadiusParamater;
+        private readonly SilverlightEffectParameter _specularStrengthParamater;
 
         public Matrix WorldViewProjection
         {

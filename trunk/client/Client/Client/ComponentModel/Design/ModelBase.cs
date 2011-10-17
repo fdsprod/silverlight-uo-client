@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace Client.ComponentModel.Design
 {
     /// <summary>

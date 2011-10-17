@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace Client.Input
 {
@@ -20,8 +20,8 @@ namespace Client.Input
         event EventHandler<MouseStateEventArgs> MouseRightDown;
         event EventHandler<MouseStateEventArgs> MouseRightUp;
         event EventHandler<MouseStateEventArgs> MouseWheel;
-        bool IsKeyDown(System.Windows.Input.Key key);
-        bool IsKeyUp(System.Windows.Input.Key key);
+        bool IsKeyDown(Key key);
+        bool IsKeyUp(Key key);
         bool IsMouseDown(MouseButton button);
         bool IsMouseUp(MouseButton button);
         bool IsPlatformKeyCodeDown(int code);

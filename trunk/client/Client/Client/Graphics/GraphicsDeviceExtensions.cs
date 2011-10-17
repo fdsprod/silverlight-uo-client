@@ -1,13 +1,4 @@
 ﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Client.Graphics
@@ -31,10 +22,10 @@ namespace Client.Graphics
         public static void DrawUserIndexedPrimitives<T>(
             this GraphicsDevice device,
             PrimitiveType primitiveType,
-            T[] vertexData, 
+            T[] vertexData,
             int vertexOffset,
             int numVertices,
-            ushort[] indexData, 
+            ushort[] indexData,
             int indexOffset,
             int primitiveCount)
             where T : struct, IVertexType
@@ -49,9 +40,9 @@ namespace Client.Graphics
             this GraphicsDevice device,
             PrimitiveType primitiveType,
             T[] vertexData,
-            int vertexOffset, 
+            int vertexOffset,
             int numVertices,
-            ushort[] indexData, 
+            ushort[] indexData,
             int indexOffset,
             int primitiveCount,
             VertexDeclaration vertexDeclaration)

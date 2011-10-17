@@ -1,15 +1,13 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using Client.Graphics.Shaders;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Client.Graphics
 {
     public class DeferredRenderer
     {
-        private Engine _engine;
-
-        private VertexPositionTexture[] _quadVertices;
-        private ushort[] _quadIndices;
+        private readonly Engine _engine;
+        private readonly VertexPositionTexture[] _quadVertices;
+        private readonly ushort[] _quadIndices;
 
         public GraphicsDevice GraphicsDevice
         {
@@ -20,21 +18,21 @@ namespace Client.Graphics
         {
             _engine = engine;
 
-            _quadVertices = new VertexPositionTexture[]
-                        {
-                            new VertexPositionTexture(
-                                new Vector3(0,0,1),
-                                new Vector2(1,1)),
-                            new VertexPositionTexture(
-                                new Vector3(0,0,1),
-                                new Vector2(0,1)),
-                            new VertexPositionTexture(
-                                new Vector3(0,0,1),
-                                new Vector2(0,0)),
-                            new VertexPositionTexture(
-                                new Vector3(0,0,1),
-                                new Vector2(1,0))
-                        };
+            _quadVertices = new[]
+            {
+                new VertexPositionTexture(
+                    new Vector3(0,0,1),
+                    new Vector2(1,1)),
+                new VertexPositionTexture(
+                    new Vector3(0,0,1),
+                    new Vector2(0,1)),
+                new VertexPositionTexture(
+                    new Vector3(0,0,1),
+                    new Vector2(0,0)),
+                new VertexPositionTexture(
+                    new Vector3(0,0,1),
+                    new Vector2(1,0))
+            };
 
             _quadIndices = new ushort[] { 0, 1, 2, 2, 3, 0 };
         }

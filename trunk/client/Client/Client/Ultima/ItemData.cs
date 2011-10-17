@@ -1,107 +1,97 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-
+﻿
 namespace Client.Ultima
 {
     public struct ItemData
     {
-        internal string m_Name;
-        internal TileFlag m_Flags;
-        internal byte m_Weight;
-        internal byte m_Quality;
-        internal byte m_Quantity;
-        internal byte m_Value;
-        internal byte m_Height;
-        internal short m_Animation;
+        internal string _name;
+        internal TileFlag _flags;
+        internal byte _weight;
+        internal byte _quality;
+        internal byte _quantity;
+        internal byte _value;
+        internal byte _height;
+        internal short _animation;
 
         public ItemData(string name, TileFlag flags, int weight, int quality, int quantity, int value, int height, int anim)
         {
-            m_Name = name;
-            m_Flags = flags;
-            m_Weight = (byte)weight;
-            m_Quality = (byte)quality;
-            m_Quantity = (byte)quantity;
-            m_Value = (byte)value;
-            m_Height = (byte)height;
-            m_Animation = (short)anim;
+            _name = name;
+            _flags = flags;
+            _weight = (byte)weight;
+            _quality = (byte)quality;
+            _quantity = (byte)quantity;
+            _value = (byte)value;
+            _height = (byte)height;
+            _animation = (short)anim;
         }
 
         public string Name
         {
-            get { return m_Name; }
+            get { return _name; }
         }
 
         public int Animation
         {
-            get { return m_Animation; }
+            get { return _animation; }
         }
 
         public TileFlag Flags
         {
-            get { return m_Flags; }
+            get { return _flags; }
         }
 
         public bool Background
         {
-            get { return ((m_Flags & TileFlag.Background) != 0); }
+            get { return ((_flags & TileFlag.Background) != 0); }
         }
 
         public bool Bridge
         {
-            get { return ((m_Flags & TileFlag.Bridge) != 0); }
+            get { return ((_flags & TileFlag.Bridge) != 0); }
         }
 
         public bool Impassable
         {
-            get { return ((m_Flags & TileFlag.Impassable) != 0); }
+            get { return ((_flags & TileFlag.Impassable) != 0); }
         }
 
         public bool Surface
         {
-            get { return ((m_Flags & TileFlag.Surface) != 0); }
+            get { return ((_flags & TileFlag.Surface) != 0); }
         }
 
         public int Weight
         {
-            get { return m_Weight; }
+            get { return _weight; }
         }
 
         public int Quality
         {
-            get { return m_Quality; }
+            get { return _quality; }
         }
 
         public int Quantity
         {
-            get { return m_Quantity; }
+            get { return _quantity; }
         }
 
         public int Value
         {
-            get { return m_Value; }
+            get { return _value; }
         }
 
         public int Height
         {
-            get { return m_Height; }
+            get { return _height; }
         }
 
         public int CalcHeight
         {
             get
             {
-                if ((m_Flags & TileFlag.Bridge) != 0)
-                    return m_Height / 2;
+                if ((_flags & TileFlag.Bridge) != 0)
+                    return _height / 2;
 
-                return m_Height;
+                return _height;
             }
         }
     }

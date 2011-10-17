@@ -1,29 +1,23 @@
 ﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System.Windows.Controls;
+using System.Windows.Input;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace Client.Input
 {
     public sealed class InputService : IInputService
     {
+        private readonly Control _rootControl;
+        private readonly List<Key> _pressedKeys;
+        private readonly List<int> _pressedPlatformKeyCodes;
+
         private bool _capturedFirstMouseMove;
-        private Control _rootControl;
-        private List<Key> _pressedKeys;
-        private List<int> _pressedPlatformKeyCodes;
         private Vector2 _mousePosition;
         private ButtonState _leftMouseButtonState;
         private ButtonState _rightMouseButtonState;
-        
+
         public event EventHandler<KeyStateEventArgs> KeyUp;
         public event EventHandler<KeyStateEventArgs> KeyDown;
         public event EventHandler<MouseStateEventArgs> MouseLeftDown;
@@ -73,7 +67,7 @@ namespace Client.Input
             _rootControl.MouseRightButtonDown += OnRootControlMouseRightButtonDown;
             _rootControl.MouseRightButtonUp += OnRootControlMouseRightButtonUp;
             _rootControl.MouseMove += OnRootControlMouseMove;
-            _rootControl.MouseWheel += OnRootControlMouseWheel;            
+            _rootControl.MouseWheel += OnRootControlMouseWheel;
         }
 
         private void OnRootControlMouseWheel(object sender, MouseWheelEventArgs e)
@@ -147,7 +141,7 @@ namespace Client.Input
 
             var handler = MouseLeftUp;
 
-            if(handler != null)
+            if (handler != null)
                 handler(e, new MouseStateEventArgs(_mousePosition, Vector2.Zero, MouseButton.Left, e.ClickCount, 0));
         }
 
@@ -158,7 +152,7 @@ namespace Client.Input
 
             var handler = KeyUp;
 
-            if(handler != null)
+            if (handler != null)
                 handler(sender, new KeyStateEventArgs(e.Key, e.PlatformKeyCode));
         }
 
@@ -169,8 +163,8 @@ namespace Client.Input
 
             var handler = KeyDown;
 
-            if(handler != null)
-                handler(sender, new KeyStateEventArgs(e.Key, e.PlatformKeyCode));        
+            if (handler != null)
+                handler(sender, new KeyStateEventArgs(e.Key, e.PlatformKeyCode));
         }
 
         public bool IsMouseUp(MouseButton button)
