@@ -53,7 +53,7 @@ namespace Client
 
         void Current_CheckAndDownloadUpdateCompleted(object sender, CheckAndDownloadUpdateCompletedEventArgs e)
         {
-            CheckingForUpdatesPanel.Visibility = Visibility.Collapsed;
+            //CheckingForUpdatesPanel.Visibility = Visibility.Collapsed;
 
             if (e.Error != null)
             {
@@ -64,13 +64,13 @@ namespace Client
             if (e.UpdateAvailable)
             {
                 Tracer.Info("Update available.");
-                UpdatedPanel.Visibility = Visibility.Visible;
+                //UpdatedPanel.Visibility = Visibility.Visible;
             }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            UpdatedPanel.Visibility = Visibility.Collapsed;
+            //UpdatedPanel.Visibility = Visibility.Collapsed;
         }
     }
 }

@@ -42,10 +42,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Shaders\Map.slfx">
-      <Name>Map</Name>
-      <Importer>SilverlightEffectImporter</Importer>
-      <Processor>SilverlightEffectProcessor</Processor>
+    <Folder Include="Shaders\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Fonts\DebugFont.spritefont">
+      <Name>DebugFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

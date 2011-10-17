@@ -85,7 +85,7 @@ namespace Client.Ultima
         {
             IConfigurationService configurationService = engine.Services.GetService<IConfigurationService>();
 
-            string ultimaOnlineDirectory = configurationService.GetValue<string>(ConfigSections.Client, ConfigKeys.UltimaOnlineDirectory);
+            string ultimaOnlineDirectory = configurationService.GetValue<string>(ConfigSections.UltimaOnline, ConfigKeys.UltimaOnlineDirectory);
 
             Asserter.AssertIsNotNullOrEmpty(ultimaOnlineDirectory, "ultimaOnlineDirectory");
             Asserter.AssertDirectoryExists(ultimaOnlineDirectory);

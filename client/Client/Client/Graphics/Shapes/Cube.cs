@@ -49,10 +49,10 @@ namespace Client
        
             // Cache effect parameters
             worldViewProjectionParameter = mySilverlightEffect.Parameters["WorldViewProjection"];
-            lightDirectionParameter = mySilverlightEffect.Parameters["LightDirection"];
+            //lightDirectionParameter = mySilverlightEffect.Parameters["LightDirection"];
 
             // Init static parameters
-            this.LightDirection = new Vector3(0, 1, -1);
+            //this.LightDirection = new Vector3(0, 0, 1);
 
             // Temporary lists
             List<VertexPositionNormalTexture> vertices = new List<VertexPositionNormalTexture>();
