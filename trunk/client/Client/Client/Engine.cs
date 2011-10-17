@@ -79,7 +79,10 @@ namespace Client
 
             _drawingSurface = drawingSurface;
             _drawingSurface.SizeChanged += OnDrawingSurfaceSizeChanged;
-            _content = new ContentManager(_gameServices);
+            _content = new ContentManager(_gameServices)
+            {                
+                RootDirectory = "Content"
+            };
             _totalGameTime = TimeSpan.Zero;
             _accumulatedElapsedGameTime = TimeSpan.Zero;
             _lastFrameElapsedGameTime = TimeSpan.Zero;

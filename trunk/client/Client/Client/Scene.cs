@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using Client.Graphics;
 using Client.Input;
 using Client.Ultima;
+using Client.Graphics.Shaders;
 
 namespace Client
 {
@@ -22,7 +23,13 @@ namespace Client
         readonly Textures _textures;
         private SpriteBatch _spriteBatch;
         private SpriteFont _font;
+        private DeferredRenderer _renderer;
 
+        private GBuffer _gBuffer;
+        private DeferredRenderShader _renderShader;
+        private PointLightShader _pointLightShader;
+        private CombineShader _combineShader;
+        private ClearShader _clearPass;
 
         bool _updateTexture;
         int _index = 0;
@@ -64,6 +71,13 @@ namespace Client
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _font = _contentManager.Load<SpriteFont>("Fonts\\DebugFont");
+
+            _renderer = new DeferredRenderer(engine);
+            _gBuffer = new GBuffer(engine);
+            _renderShader = new DeferredRenderShader(engine);
+            _pointLightShader = new PointLightShader(engine);
+            _combineShader = new CombineShader(engine);
+            _clearPass = new ClearShader(engine);            
         }
 
         void _inputService_KeyDown(object sender, KeyStateEventArgs e)
@@ -110,19 +124,44 @@ namespace Client
 
         private void DrawScene(GameTime gameTime)
         {
-            GraphicsDeviceManager.Current.GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, new Color(0.2f, 0.2f, 0.2f, 1.0f), 1.0f, 0);
+            //GraphicsDeviceManager.Current.GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, new Color(0.2f, 0.2f, 0.2f, 1.0f), 1.0f, 0);
 
-            Matrix world1 = Matrix.CreateScale(300) * Matrix.CreateTranslation(Vector3.Left * 200);
-            Matrix world2 = Matrix.CreateScale(300) * Matrix.CreateTranslation(Vector3.Right * 200);
-            Matrix view = _camera.Transform;
-            Matrix projection = _camera.Projection;
+            _gBuffer.BeginClear();
+            _clearPass.Apply();
+            _renderer.DrawQuad(-Vector2.One, Vector2.One);
+            _gBuffer.End();
 
-            _cube1.WorldViewProjection = world1 * view * projection;
-            _cube1.Draw();
+            _gBuffer.BeginRenderPass();
 
-            _cube2.WorldViewProjection = world2 * view * projection;
-            _cube2.Draw();
+            _renderShader.WorldViewProjection = _camera.Transform * _camera.Projection;
+            _renderShader.Apply();
 
+            Texture2D d, n;
+            _textures.CreateTexture(_index, out d, out n);
+
+            GraphicsDevice.Textures[0] = d;
+            GraphicsDevice.Textures[1] = n;
+
+            _renderer.DrawQuad(new Vector2(-100, -100), new Vector2(100, 100));
+            _gBuffer.End();
+
+            PresentationParameters pp = GraphicsDevice.PresentationParameters;
+                        
+            GraphicsDevice.Textures[0] = _gBuffer.NormalTexture;
+
+            _gBuffer.BeginLightingPass();
+            _pointLightShader.LightColor = Vector4.One;
+            _pointLightShader.LightDecay = 200;
+            _pointLightShader.LightPosition = new Vector3(_inputService.MousePosition, 0);
+            _pointLightShader.LightRadius = 100;
+            _pointLightShader.LightStrength = 1;
+            _pointLightShader.ScreenSize = new Vector2(pp.BackBufferWidth, pp.BackBufferHeight);
+            _pointLightShader.SpecularStrength = 1;
+            _pointLightShader.Apply();
+
+            _renderer.DrawQuad(-Vector2.One, Vector2.One);
+
+            _combineShader
             _spriteBatch.Begin();
             _spriteBatch.DrawString(_font, "Press Up/Down arrows to cycle through the textures", new Vector2(24, 24), Color.Black);
             _spriteBatch.End();
