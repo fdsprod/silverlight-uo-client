@@ -121,6 +121,11 @@
     <Compile Include="Graphics\IRenderer.cs" />
     <Compile Include="Graphics\Particles\Particle.cs" />
     <Compile Include="Graphics\Renderer.cs" />
+    <Compile Include="Graphics\Shaders\CombineShader.cs" />
+    <Compile Include="Graphics\Shaders\ClearShader.cs" />
+    <Compile Include="Graphics\Shaders\PointLightShader.cs" />
+    <Compile Include="Graphics\Shaders\DeferredRenderShader.cs" />
+    <Compile Include="Graphics\Shaders\ShaderBase.cs" />
     <Compile Include="Input\IInputService.cs" />
     <Compile Include="Input\KeyStateEventArgs.cs" />
     <Compile Include="Input\MouseButton.cs" />

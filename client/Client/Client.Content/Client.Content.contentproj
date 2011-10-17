@@ -42,13 +42,34 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Shaders\" />
+    <Compile Include="Shaders\Deferred\ClearPass.slfx">
+      <Name>ClearPass</Name>
+      <Importer>SilverlightEffectImporter</Importer>
+      <Processor>SilverlightEffectProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Fonts\DebugFont.spritefont">
       <Name>DebugFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Shaders\Deferred\PointLightPass.slfx">
+      <Name>PointLightPass</Name>
+      <Importer>SilverlightEffectImporter</Importer>
+      <Processor>SilverlightEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Shaders\Deferred\CombinePass.slfx">
+      <Name>CombinePass</Name>
+      <Importer>SilverlightEffectImporter</Importer>
+      <Processor>SilverlightEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Shaders\Deferred\RenderPass.slfx">
+      <Name>RenderPass</Name>
+      <Importer>SilverlightEffectImporter</Importer>
+      <Processor>SilverlightEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

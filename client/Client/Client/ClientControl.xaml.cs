@@ -33,7 +33,7 @@ namespace Client
             }
 
             IConfigurationService configurationService = new ConfigurationService();
-            IRenderer renderer = new Renderer();
+            //IRenderer renderer = new Renderer();
 
             Tracer.TraceLevel = configurationService.GetValue<TraceLevels>(ConfigSections.Debug, ConfigKeys.DebugLogLevel);
             Tracer.Info("Checking for updates...");

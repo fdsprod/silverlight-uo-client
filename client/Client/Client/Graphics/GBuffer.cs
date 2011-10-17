@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Xna.Framework.Graphics;
+using Client.Graphics.Shaders;
 
 namespace Client.Graphics
 {
@@ -19,13 +20,10 @@ namespace Client.Graphics
         private RenderTarget2D _diffuseTarget;
         private RenderTarget2D _normalTarget;
         private RenderTarget2D _lightingTarget;
+        private RenderTarget2D _combineTarget;
 
         private bool _drawSurfaceSizeChanged;
         private bool _isDeferredLightingEnabled;
-
-        private SilverlightEffect _renderEffect;
-        private SilverlightEffect _lightingEffect;
-        private SilverlightEffect _combineEffect;
 
         public bool IsDeferredLightingEnabled
         {
@@ -33,11 +31,31 @@ namespace Client.Graphics
             set { _isDeferredLightingEnabled = value; }
         }
 
+        public Texture2D DiffuseTexture
+        {
+            get { return _diffuseTarget; }
+        }
+
+        public Texture2D NormalTexture
+        {
+            get { return _normalTarget; }
+        }
+
+        public Texture2D LightingTexture
+        {
+            get { return _lightingTarget; }
+        }
+
+        public Texture2D FinalTexture
+        {
+            get { return _combineTarget; }
+        }
+
         public GBuffer(Engine engine)
         {
             _engine = engine;
             _engine.DrawingSurface.SizeChanged += new SizeChangedEventHandler(OnDrawingSurfaceSizeChanged);
-
+            
             InitializeTargets();
         }
 
@@ -59,22 +77,27 @@ namespace Client.Graphics
             }
         }
 
-        public void PrepareDraw()
+        public void BeginClear()
+        {
+            _engine.GraphicsDevice.SetRenderTargets(_diffuseTarget, _normalTarget, _lightingTarget, _combineTarget);
+        }
+
+        public void End()
+        {
+            _engine.GraphicsDevice.SetRenderTargets(null);
+        }
+
+        public void BeginRenderPass()
         {
             _engine.GraphicsDevice.SetRenderTargets(_diffuseTarget, _normalTarget);
         }
         
-        public void PrepareLighting()
+        public void BeginLightingPass()
         {
             _engine.GraphicsDevice.SetRenderTargets(_lightingTarget);
         }
 
-        public void Combine()
-        {
-
-        }
-
-        public void Present()
+        public void BeginCombine()
         {
 
         }

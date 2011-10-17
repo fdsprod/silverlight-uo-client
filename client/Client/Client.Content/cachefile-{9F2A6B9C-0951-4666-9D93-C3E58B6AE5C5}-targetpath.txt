@@ -1,3 +1,7 @@
 CustomEffect.xnb
 Textures\missing-texture.xnb
 Fonts\DebugFont.xnb
+Shaders\Deferred\PointLightPass.xnb
+Shaders\Deferred\CombinePass.xnb
+Shaders\Deferred\RenderPass.xnb
+Shaders\Deferred\ClearPass.xnb
