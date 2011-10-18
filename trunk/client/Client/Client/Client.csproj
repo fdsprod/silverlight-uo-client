@@ -112,17 +112,21 @@
     </Compile>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\NotBoolToVisibilityConverter.cs" />
+    <Compile Include="DrawState.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="Graphics\Camera2D.cs" />
     <Compile Include="Graphics\GBuffer.cs" />
     <Compile Include="Graphics\GooEee\GooEeeElement.cs" />
     <Compile Include="Graphics\GooEee\GooEeeManager.cs" />
     <Compile Include="Graphics\GraphicsDeviceExtensions.cs" />
+    <Compile Include="Graphics\ICamera.cs" />
+    <Compile Include="Graphics\IDraw.cs" />
     <Compile Include="Graphics\IRenderer.cs" />
     <Compile Include="Graphics\Particles\Particle.cs" />
     <Compile Include="Graphics\Renderer.cs" />
     <Compile Include="Graphics\Shaders\CombineShader.cs" />
     <Compile Include="Graphics\Shaders\ClearShader.cs" />
+    <Compile Include="Graphics\Shaders\DiffuseShader.cs" />
     <Compile Include="Graphics\Shaders\PointLightShader.cs" />
     <Compile Include="Graphics\Shaders\DeferredRenderShader.cs" />
     <Compile Include="Graphics\Shaders\ShaderBase.cs" />
@@ -132,6 +136,7 @@
     <Compile Include="Input\MouseStateEventArgs.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="Input\InputService.cs" />
+    <Compile Include="IUpdate.cs" />
     <Compile Include="Mobile.cs" />
     <Compile Include="Serial.cs" />
     <Compile Include="Ultima\HuedTile.cs" />
@@ -145,12 +150,13 @@
     <Compile Include="Ultima\TileFlag.cs" />
     <Compile Include="Ultima\TileList.cs" />
     <Compile Include="Ultima\TileMatrix.cs" />
+    <Compile Include="UpdateState.cs" />
     <Compile Include="UpdatingPrompt.xaml.cs">
       <DependentUpon>UpdatingPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="Extensions\ByteArrayExtensions.cs" />
     <Compile Include="Collections\Cache.cs" />
-    <Compile Include="ClientGame.cs" />
+    <Compile Include="ClientEngine.cs" />
     <Compile Include="Diagnostics\ITraceListener.cs" />
     <Compile Include="Diagnostics\Listeners\DebugTraceListener.cs" />
     <Compile Include="Diagnostics\Listeners\DebugLogTraceListener.cs" />
@@ -162,9 +168,8 @@
     <Compile Include="Engine.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="GameServiceContainer.cs" />
-    <Compile Include="GameTime.cs" />
-    <Compile Include="Graphics\ITextureManager.cs" />
-    <Compile Include="Graphics\TextureManager.cs" />
+    <Compile Include="Graphics\Textures\ITextureFactory.cs" />
+    <Compile Include="Graphics\Textures\TextureFactory.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="Graphics\VertexPositionNormalTexture.cs" />
     <Compile Include="Graphics\Shapes\Cube.cs" />
@@ -194,7 +199,6 @@
     <Compile Include="ObjectConverterter.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scene.cs" />
     <Compile Include="Graphics\VertexPositionColorNormal.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
     <Compile Include="Text\ASCIIEncoding.cs" />
@@ -257,9 +261,7 @@
   <ItemGroup>
     <Resource Include="Themes\background.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Engine\Shaders\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <PropertyGroup>
     <XnaContentProject>..\Client.Content\Client.Content.contentproj</XnaContentProject>

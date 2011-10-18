@@ -14,7 +14,8 @@ namespace Client
     {
         private readonly TimeSpan _maximumElapsedTime = TimeSpan.FromMilliseconds(500.0);
         private readonly GameServiceContainer _gameServices;
-        private readonly GameTime _gameTime;
+        private readonly DrawState _drawState;
+        private readonly UpdateState _updateState;
         private readonly DrawingSurface _drawingSurface;
 
         private int _updatesSinceRunningSlowly1 = int.MaxValue;
@@ -87,7 +88,8 @@ namespace Client
             _accumulatedElapsedGameTime = TimeSpan.Zero;
             _lastFrameElapsedGameTime = TimeSpan.Zero;
             _targetElapsedTime = TimeSpan.FromTicks(166667L);
-            _gameTime = new GameTime();
+            _drawState = new DrawState();
+            _updateState = new UpdateState();
             _gameServices = new GameServiceContainer();
 
             RootControl = (Control)drawingSurface.Parent;
@@ -122,11 +124,11 @@ namespace Client
                 Tracer.Info("Initializing Engine...");
                 Initialize();
 
-                _gameTime.ElapsedGameTime = TimeSpan.Zero;
-                _gameTime.TotalGameTime = _totalGameTime;
-                _gameTime.IsRunningSlowly = false;
+                _updateState.ElapsedGameTime = TimeSpan.Zero;
+                _updateState.TotalGameTime = _totalGameTime;
+                _updateState.IsRunningSlowly = false;
 
-                Update(_gameTime);
+                Update(_updateState);
 
                 _doneFirstUpdate = true;
             }
@@ -185,10 +187,10 @@ namespace Client
                 --speed;
                 try
                 {
-                    _gameTime.ElapsedGameTime = targetElapsedTime;
-                    _gameTime.TotalGameTime = _totalGameTime;
-                    _gameTime.IsRunningSlowly = _drawRunningSlowly;
-                    Update(_gameTime);
+                    _updateState.ElapsedGameTime = targetElapsedTime;
+                    _updateState.TotalGameTime = _totalGameTime;
+                    _updateState.IsRunningSlowly = _drawRunningSlowly;
+                    Update(_updateState);
                     suppressDraw = suppressDraw & _suppressDraw;
                     _suppressDraw = false;
                 }
@@ -209,7 +211,7 @@ namespace Client
             LoadContent();
         }
 
-        protected virtual void Update(GameTime gameTime)
+        protected virtual void Update(UpdateState state)
         {
             _doneFirstUpdate = true;
         }
@@ -219,7 +221,7 @@ namespace Client
             return true;
         }
 
-        protected virtual void Draw(GameTime gameTime) { }
+        protected virtual void Draw(DrawState state) { }
 
         protected virtual void EndDraw() { }
 
@@ -268,11 +270,12 @@ namespace Client
             {
                 if (_doneFirstUpdate && (BeginDraw()))
                 {
-                    _gameTime.TotalGameTime = _totalGameTime;
-                    _gameTime.ElapsedGameTime = _lastFrameElapsedGameTime;
-                    _gameTime.IsRunningSlowly = _drawRunningSlowly;
+                    _drawState.TotalGameTime = _totalGameTime;
+                    _drawState.ElapsedGameTime = _lastFrameElapsedGameTime;
+                    _drawState.IsRunningSlowly = _drawRunningSlowly;
+                    _drawState.GraphicsDevice = GraphicsDevice;
 
-                    Draw(_gameTime);
+                    Draw(_drawState);
                     EndDraw();
                 }
             }

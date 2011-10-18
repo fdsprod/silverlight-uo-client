@@ -52,7 +52,10 @@ namespace Client.Collections
                 CacheItem<U> cacheItem;
 
                 if (!_internalCache.TryGetValue(index, out cacheItem))
+                {
                     cacheItem = new CacheItem<U>(value, _timeToExpire);
+                    _internalCache.Add(index, cacheItem);
+                }
 
                 cacheItem.Value = value;
             }

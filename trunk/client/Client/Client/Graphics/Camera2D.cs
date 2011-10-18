@@ -3,9 +3,9 @@ using Microsoft.Xna.Framework;
 
 namespace Client.Graphics
 {
-    public class Camera2D
+    public class Camera2D : ICamera
     {
-        private readonly Engine _engine;
+        private readonly ClientEngine _engine;
 
         private int _width;
         private int _height;
@@ -13,9 +13,25 @@ namespace Client.Graphics
         private int _farClip = 1;
         private bool _projectionDirty;
         private bool _transformDirty;
+        private bool _boundingFrustumDirty;
         private Vector3 _position;
-        private Matrix _transform;
+        private Matrix _view;
         private Matrix _projection;
+        private BoundingFrustum _boundingFrustum;
+
+        public BoundingFrustum BoundingFrustum
+        {
+            get
+            {
+                if (_boundingFrustumDirty)
+                {
+                    _boundingFrustumDirty = false;
+                    _boundingFrustum = new BoundingFrustum(Projection * View);
+                }
+
+                return _boundingFrustum;
+            }
+        }
 
         public Matrix Projection
         {
@@ -31,17 +47,20 @@ namespace Client.Graphics
             }
         }
 
-        public Matrix Transform
+        public Matrix View
         {
             get
             {
                 if (_transformDirty)
                 {
                     _transformDirty = false;
-                    Matrix.CreateTranslation(ref _position, out _transform);
+                    Matrix.CreateTranslation(ref _position, out _view);
+                    Matrix rotation;
+                    Matrix.CreateRotationZ(MathHelper.ToRadians(45), out rotation);
+                    Matrix.Multiply(ref _view, ref rotation, out _view);
                 }
 
-                return _transform;
+                return _view;
             }
         }
 
@@ -53,6 +72,7 @@ namespace Client.Graphics
                 _position.X = value.X;
                 _position.Y = value.Y;
                 _transformDirty = true;
+                _boundingFrustumDirty = true;
             }
         }
 
@@ -63,6 +83,7 @@ namespace Client.Graphics
             {
                 _nearClip = value;
                 _projectionDirty = true;
+                _boundingFrustumDirty = true;
             }
         }
 
@@ -73,13 +94,15 @@ namespace Client.Graphics
             {
                 _farClip = value;
                 _projectionDirty = true;
+                _boundingFrustumDirty = true;
             }
         }
 
-        public Camera2D(Engine engine)
+        public Camera2D(ClientEngine engine)
         {
             _projectionDirty = true;
             _transformDirty = true;
+            _boundingFrustumDirty = true;
 
             _engine = engine;
             _engine.DrawingSurface.SizeChanged += OnDrawingSurfaceSizeChanged;
@@ -93,6 +116,7 @@ namespace Client.Graphics
             _width = (int)_engine.DrawingSurface.ActualWidth;
             _height = (int)_engine.DrawingSurface.ActualHeight;
             _projectionDirty = true;
+            _boundingFrustumDirty = true;
         }
     }
 }

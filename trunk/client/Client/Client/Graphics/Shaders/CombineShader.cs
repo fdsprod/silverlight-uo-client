@@ -24,7 +24,7 @@ namespace Client.Graphics.Shaders
             set { _ambientLightPowerParameter.SetValue(value); }
         }
 
-        public CombineShader(Engine engine)
+        public CombineShader(ClientEngine engine)
             : base(engine, "Shaders\\Deferred\\CombinePass")
         {
             _worldViewProjectionParamater = Effect.Parameters["WorldViewProjection"];

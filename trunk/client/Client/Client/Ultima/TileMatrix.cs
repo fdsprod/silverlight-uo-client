@@ -48,7 +48,7 @@ namespace Client.Ultima
             get { return _emptyStaticBlock; }
         }
 
-        public TileMatrix(Engine engine, int fileIndex, int mapID, int width, int height)
+        public TileMatrix(ClientEngine engine, int fileIndex, int mapID, int width, int height)
         {
             IConfigurationService configurationService = engine.Services.GetService<IConfigurationService>();
 
@@ -230,6 +230,7 @@ namespace Client.Ultima
                     {
                         ptr->_id = reader.ReadInt16();
                         ptr->_z = reader.ReadSByte();
+                        ptr++;
                     }
                 }
             }

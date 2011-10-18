@@ -54,7 +54,7 @@ namespace Client.Graphics.Shaders
             set { _specularStrengthParamater.SetValue(value); }
         }
 
-        public PointLightShader(Engine engine)
+        public PointLightShader(ClientEngine engine)
             : base(engine, "Shaders\\Deferred\\PointLightPass")
         {
             _worldViewProjectionParamater = Effect.Parameters["WorldViewProjection"];

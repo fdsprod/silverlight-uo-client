@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Client.Graphics.Shaders
 {
-    public class DeferredRenderShader : ShaderBase
+    public class DiffuseShader : ShaderBase
     {
         private readonly SilverlightEffectParameter _worldViewProjectionParamater;
 
@@ -12,8 +12,8 @@ namespace Client.Graphics.Shaders
             set { _worldViewProjectionParamater.SetValue(value); }
         }
 
-        public DeferredRenderShader(ClientEngine engine)
-            : base(engine, "Shaders\\Deferred\\RenderPass")
+        public DiffuseShader(ClientEngine engine)
+            : base(engine, "Shaders\\DiffuseEffect")
         {
             _worldViewProjectionParamater = Effect.Parameters["WorldViewProjection"];
         }

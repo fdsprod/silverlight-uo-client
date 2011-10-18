@@ -14,7 +14,7 @@ namespace Client
 {
     public sealed class World 
     {
-        private Engine _engine;
+        private ClientEngine _engine;
 
         private Dictionary<Serial, Mobile> _mobiles;
         private Dictionary<Serial, Item> _items;
@@ -29,7 +29,7 @@ namespace Client
             get { return _items; }
         }
 
-        public World(Engine engine)
+        public World(ClientEngine engine)
         {
             _engine = engine;
 

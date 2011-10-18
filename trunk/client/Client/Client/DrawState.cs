@@ -1,12 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Client
 {
-    public sealed class GameTime
+    public class DrawState
     {
         private TimeSpan _totalGameTime;
         private TimeSpan _elapsedGameTime;
         private bool _isRunningSlowly;
+        private GraphicsDevice _graphicsDevice;
+
+        public GraphicsDevice GraphicsDevice
+        {
+            get { return _graphicsDevice; }
+            internal set { _graphicsDevice = value; }
+        }
 
         public TimeSpan TotalGameTime
         {
@@ -24,22 +35,6 @@ namespace Client
         {
             get { return _isRunningSlowly; }
             internal set { _isRunningSlowly = value; }
-        }
-
-        public GameTime()
-        {
-        }
-
-        public GameTime(TimeSpan totalGameTime, TimeSpan elapsedGameTime, bool isRunningSlowly)
-        {
-            _totalGameTime = totalGameTime;
-            _elapsedGameTime = elapsedGameTime;
-            _isRunningSlowly = isRunningSlowly;
-        }
-
-        public GameTime(TimeSpan totalGameTime, TimeSpan elapsedGameTime)
-            : this(totalGameTime, elapsedGameTime, false)
-        {
         }
     }
 }

@@ -48,7 +48,7 @@ namespace Client.Ultima
             return new ASCIIEncoding().GetString(m_StringBuffer, 0, count);
         }
 
-        public TileData(Engine engine)
+        public TileData(ClientEngine engine)
         {
             _instance = this;
 

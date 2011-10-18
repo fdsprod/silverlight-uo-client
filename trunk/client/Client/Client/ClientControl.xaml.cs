@@ -11,7 +11,7 @@ namespace Client
 {
     public partial class ClientControl
     {
-        private ClientGame _game;
+        private ClientEngine _game;
 
         public ClientControl()
         {
@@ -41,7 +41,7 @@ namespace Client
             Application.Current.CheckAndDownloadUpdateCompleted += Current_CheckAndDownloadUpdateCompleted;
             Application.Current.CheckAndDownloadUpdateAsync();
 
-            _game = new ClientGame(DrawingSurface);
+            _game = new ClientEngine(DrawingSurface);
             
             IInputService inputService = new InputService(_game);
 
