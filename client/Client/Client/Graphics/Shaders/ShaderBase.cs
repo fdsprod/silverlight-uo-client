@@ -21,7 +21,7 @@ namespace Client.Graphics.Shaders
             get { return _effect; }
         }
 
-        public ShaderBase(Engine engine, string assetName)
+        public ShaderBase(ClientEngine engine, string assetName)
         {
             _effect = engine.Content.Load<SilverlightEffect>(assetName);
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using Client.Collections;
 using Microsoft.Xna.Framework.Graphics;
+using Client.Ultima;
 
 namespace Client.Graphics
 {
@@ -10,11 +11,12 @@ namespace Client.Graphics
         Static
     }
 
-    public class TextureManager : ITextureManager
+    public class TextureFactory : ITexturFactory, IUpdate
     {
         private readonly TimeSpan _cleanInterval = TimeSpan.FromMinutes(1);
         private readonly Texture2D _missingTexture;
         private readonly Cache<int, Texture2D> _landCache;
+        private readonly Textures _textures;
         private DateTime _lastCacheClean;
 
         public Cache<int, Texture2D> LandCache
@@ -22,32 +24,32 @@ namespace Client.Graphics
             get { return _landCache; }
         }
 
-        public TextureManager(Engine engine)
+        public TextureFactory(ClientEngine engine)
         {
             _missingTexture = engine.Content.Load<Texture2D>("Textures\\missing-texture");
             _landCache = new Cache<int, Texture2D>(TimeSpan.FromMinutes(5), 0x1000);
             _lastCacheClean = DateTime.MinValue;
+            _textures = new Textures(engine);
         }
 
-        public Texture2D GetLand(int index)
+        public Texture2D CreateLand(int index)
         {
             Texture2D texture = _landCache[index];
 
             if (texture != null)
                 return texture;
 
-            // TODO: First check if the texture is cached on disk, if not
-            //       we need to fetch it from the online storage
+            return _landCache[index] = _textures.CreateTexture(index);
 
-            return _missingTexture;
+            //return _missingTexture;
         }
 
-        public Texture2D GetStatic(int index)
+        public Texture2D CreateStatic(int index)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(UpdateState state)
         {
             DateTime now = DateTime.Now;
 

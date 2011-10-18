@@ -81,7 +81,7 @@ namespace Client.Ultima
                 _stream = new FileStream(_mulPath, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
 
-        public FileIndex(Engine engine, string idxFile, string mulFile, int length, int file)
+        public FileIndex(ClientEngine engine, string idxFile, string mulFile, int length, int file)
         {
             IConfigurationService configurationService = engine.Services.GetService<IConfigurationService>();
 

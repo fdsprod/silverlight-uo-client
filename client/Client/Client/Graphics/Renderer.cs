@@ -22,31 +22,31 @@ namespace Client.Graphics
             {
                 new VertexPositionTexture(
                     new Vector3(0,0,1),
-                    new Vector2(1,1)),
+                    new Vector2(0,0)),
                 new VertexPositionTexture(
                     new Vector3(0,0,1),
                     new Vector2(0,1)),
                 new VertexPositionTexture(
                     new Vector3(0,0,1),
-                    new Vector2(0,0)),
+                    new Vector2(1,0)),
                 new VertexPositionTexture(
                     new Vector3(0,0,1),
-                    new Vector2(1,0))
+                    new Vector2(1,1))
             };
 
-            _quadIndices = new ushort[] { 0, 1, 2, 2, 3, 0 };
+            _quadIndices = new ushort[] { 0, 1, 2, 2, 1, 3 };
         }
 
         public void DrawQuad(Vector2 v1, Vector2 v2)
         {
-            _quadVertices[0].Position.X = v2.X;
+            _quadVertices[0].Position.X = v1.X;
             _quadVertices[0].Position.Y = v1.Y;
 
             _quadVertices[1].Position.X = v1.X;
-            _quadVertices[1].Position.Y = v1.Y;
+            _quadVertices[1].Position.Y = v2.Y;
 
-            _quadVertices[2].Position.X = v1.X;
-            _quadVertices[2].Position.Y = v2.Y;
+            _quadVertices[2].Position.X = v2.X;
+            _quadVertices[2].Position.Y = v1.Y;
 
             _quadVertices[3].Position.X = v2.X;
             _quadVertices[3].Position.Y = v2.Y;

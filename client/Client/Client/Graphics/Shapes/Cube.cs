@@ -6,7 +6,6 @@ namespace Client
 {
     public class Cube
     {
-        readonly Scene scene;
         readonly GraphicsDevice graphicsDevice;
         readonly VertexBuffer vertexBuffer;
         readonly IndexBuffer indexBuffer;
@@ -41,11 +40,10 @@ namespace Client
             set;
         }
 
-        public Cube(Scene scene, float size)
+        public Cube(ClientEngine engine, float size)
         {
-            this.scene = scene;
-            this.graphicsDevice = scene.GraphicsDevice;
-            this.mySilverlightEffect = scene.ContentManager.Load<SilverlightEffect>("CustomEffect");
+            this.graphicsDevice = engine.GraphicsDevice;
+            this.mySilverlightEffect = engine.Content.Load<SilverlightEffect>("CustomEffect");
        
             // Cache effect parameters
             worldViewProjectionParameter = mySilverlightEffect.Parameters["WorldViewProjection"];

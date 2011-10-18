@@ -10,12 +10,12 @@ namespace Client.Ultima
     {
         private readonly FileIndex _fileIndex;
 
-        public Textures(Engine engine)
+        public Textures(ClientEngine engine)
         {
             _fileIndex = new FileIndex(engine, "texidx.mul", "texmaps.mul", 0x1000, 10);
         }
 
-        public Texture2D CreateTexture(int index)
+        public unsafe Texture2D CreateTexture(int index)
         {
             int length, extra;
             bool patched;
@@ -30,15 +30,40 @@ namespace Client.Ultima
 
             byte[] buffer = new byte[pixelCount * 2];
             ushort[] pixels = new ushort[pixelCount];
+            Color[] colors = new Color[pixelCount];
 
             stream.Read(buffer, 0, buffer.Length);
             Buffer.BlockCopy(buffer, 0, pixels, 0, pixelCount * 2);
+
+            fixed (ushort* pPtr = pixels)
+            fixed (Color* cPtr = colors)
+            {
+                ushort* pixelPtr = pPtr;
+                Color* colorPtr = cPtr;
+
+                int count = pixels.Length;
+
+                for (int i = 0; i < count; i++)
+                {
+                    ushort pixel = *pixelPtr;
+
+                    colorPtr->R = (byte)(pixel & 0x1F);
+                    colorPtr->G = (byte)((pixel >> 5) & 0x1F);
+                    colorPtr->B = (byte)((pixel >> 10) & 0x1F);
+                    colorPtr->A = 255;
+
+                    colorPtr++;
+                    pixelPtr++;
+                }
+            }
 
             Texture2D texture = new Texture2D(GraphicsDeviceManager.Current.GraphicsDevice, size, size, false, SurfaceFormat.Bgra5551);
             texture.SetData(pixels);
 
             return texture;
         }
+
+        const int multiplier = 0xFF / 0x1F;
 
         public unsafe void CreateTexture(int index, out Texture2D diffuseTexture, out Texture2D normalTexture)
         {
@@ -58,24 +83,43 @@ namespace Client.Ultima
 
             byte[] buffer = new byte[pixelCount * 2];
             ushort[] pixels = new ushort[pixelCount];
+            Color[] colors = new Color[pixelCount];
 
             stream.Read(buffer, 0, buffer.Length);
             Buffer.BlockCopy(buffer, 0, pixels, 0, pixelCount * 2);
 
-            diffuseTexture = new Texture2D(GraphicsDeviceManager.Current.GraphicsDevice, size, size, false, SurfaceFormat.Bgra5551);
-            diffuseTexture.SetData(pixels);
+            fixed (ushort* pPtr = pixels)
+            fixed (Color* cPtr = colors)
+            {
+                ushort* pixelPtr = pPtr;
+                Color* colorPtr = cPtr;
+
+                int count = pixels.Length;
+
+                for (int i = 0; i < count; i++)
+                {
+                    colorPtr->R = (byte)((*pixelPtr & 0x1F) & multiplier);
+                    colorPtr->G = (byte)(((*pixelPtr >> 5) & 0x1F) & multiplier);
+                    colorPtr->B = (byte)(((*pixelPtr >> 10) & 0x1F) & multiplier);
+                    colorPtr->A = 255;
+                    colorPtr++;
+                }
+            }
+
+            diffuseTexture = new Texture2D(GraphicsDeviceManager.Current.GraphicsDevice, size, size, false, SurfaceFormat.Color);
+            diffuseTexture.SetData(colors);
 
             float[] heights = GenerateHeightFields(pixels, size);
             Vector3[] normals = GenerateNormalFields(heights, size, false);
-            Color[] colors = new Color[heights.Length];
+            Color[] normalColors = new Color[heights.Length];
 
             fixed (Vector3* normal = normals)
-            fixed (Color* color = colors)
+            fixed (Color* color = normalColors)
             {
                 Vector3* nPtr = normal;
                 Color* cPtr = color;
 
-                int count = colors.Length;
+                int count = normalColors.Length;
 
                 for (int i = 0; i < count; i++)
                 {
@@ -89,7 +133,7 @@ namespace Client.Ultima
             }
 
             normalTexture = new Texture2D(GraphicsDeviceManager.Current.GraphicsDevice, size, size, false, SurfaceFormat.Color);
-            normalTexture.SetData(colors);
+            normalTexture.SetData(normalColors);
         }
 
         private static float[] GenerateHeightFields(ushort[] pixels, int size)

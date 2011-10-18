@@ -5,7 +5,7 @@ namespace Client.Graphics
 {
     public sealed class GBuffer
     {
-        private readonly Engine _engine;
+        private readonly ClientEngine _engine;
 
         private RenderTarget2D _diffuseTarget;
         private RenderTarget2D _normalTarget;
@@ -41,12 +41,12 @@ namespace Client.Graphics
             get { return _combineTarget; }
         }
 
-        public GBuffer(Engine engine)
+        public GBuffer(ClientEngine engine)
         {
             _engine = engine;
             _engine.DrawingSurface.SizeChanged += new SizeChangedEventHandler(OnDrawingSurfaceSizeChanged);
 
-            InitializeTargets();
+            _drawSurfaceSizeChanged = true;
         }
 
         private void InitializeTargets()
@@ -56,9 +56,10 @@ namespace Client.Graphics
             _diffuseTarget = new RenderTarget2D(_engine.GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.None);
             _normalTarget = new RenderTarget2D(_engine.GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.None);
             _lightingTarget = new RenderTarget2D(_engine.GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.None);
+            _combineTarget = new RenderTarget2D(_engine.GraphicsDevice, pp.BackBufferWidth, pp.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.None);
         }
 
-        public void EndDraw()
+        public void BeginDraw()
         {
             if (_drawSurfaceSizeChanged)
             {
