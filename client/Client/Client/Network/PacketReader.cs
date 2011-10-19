@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using Client.Diagnostics;
 using Client.IO;
+using System.IO.IsolatedStorage;
 
 namespace Client.Network
 {
@@ -44,10 +45,13 @@ namespace Client.Network
         {
             try
             {
-                FileSystemHelper.EnsureDirectoryExists(Paths.Logs);
+                string path = Path.Combine(Paths.LogsDirectory, "packets.log");                
+                IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication();
 
-                using (StreamWriter sw = new StreamWriter(Path.Combine(Paths.Logs, "packets.log"), true))
+                using (StreamWriter sw = new StreamWriter(store.OpenFile(path, FileMode.OpenOrCreate)))
                 {
+                    sw.BaseStream.Seek(sw.BaseStream.Length, SeekOrigin.Begin);
+
                     byte[] buffer = _data;
 
                     if (_data.Length > 0)

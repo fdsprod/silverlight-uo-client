@@ -4,12 +4,14 @@ using System.IO;
 using System.Threading;
 using System.Windows;
 using Client.IO;
+using System.IO.IsolatedStorage;
 
 namespace Client.Diagnostics
 {
     public sealed class DebugLogTraceListener : TraceListener
     {
         private static readonly Dictionary<string, object> _lockTable = new Dictionary<string, object>();
+        private static readonly IsolatedStorageFile _store = IsolatedStorageFile.GetUserStoreForApplication();
         private readonly string _filename;
 
         public DebugLogTraceListener(string filename)
@@ -23,8 +25,8 @@ namespace Client.Diagnostics
                 syncRoot = new object();
                 _lockTable.Add(filename, syncRoot);
 
-                if (File.Exists(_filename))
-                    File.Delete(_filename);
+                if (_store.FileExists(_filename))
+                    _store.DeleteFile(_filename);
 
                 OnTraceReceived(new TraceMessage(TraceLevels.Verbose, DateTime.UtcNow, "Logging Started",
                     string.IsNullOrEmpty(Thread.CurrentThread.Name) ? Thread.CurrentThread.ManagedThreadId.ToString() : Thread.CurrentThread.Name));
@@ -35,9 +37,6 @@ namespace Client.Diagnostics
         {
             try
             {
-                if (!Application.Current.IsRunningOutOfBrowser)
-                    return;
-
                 object syncRoot = _lockTable[_filename];
 
                 lock (syncRoot)
@@ -46,15 +45,10 @@ namespace Client.Diagnostics
 
                     FileSystemHelper.EnsureDirectoryExists(directory);
 
-                    using (FileStream fileStream = new FileStream(_filename, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
+                    using (StreamWriter writer = new StreamWriter(_store.OpenFile(_filename, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read)))
                     {
-                        fileStream.Seek(fileStream.Length, SeekOrigin.Begin);
-
-                        using (StreamWriter writer = new StreamWriter(fileStream))
-                        {
-                            writer.WriteLine(message);
-                            writer.Flush();
-                        }
+                        writer.WriteLine(message);
+                        writer.Flush();
                     }
                 }
             }

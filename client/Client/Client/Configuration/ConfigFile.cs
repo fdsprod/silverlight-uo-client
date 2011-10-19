@@ -7,15 +7,19 @@ using System.Xml.Linq;
 
 using Client.Diagnostics;
 using Client.IO;
+using System.IO.IsolatedStorage;
 
 namespace Client.Configuration
 {
     public class ConfigFile
     {
+        private static object _syncRoot = new object();
+
         private readonly string _filename;
         private readonly Dictionary<string, Dictionary<string, string>> _sections;
+        private IsolatedStorageFile _store = IsolatedStorageFile.GetUserStoreForApplication();
 
-        public bool Exists { get { return File.Exists(_filename); } }
+        public bool Exists { get { return _store.FileExists(_filename); } }
 
         public ConfigFile(string filename)
         {
@@ -36,32 +40,35 @@ namespace Client.Configuration
 
             try
             {
-                using (Stream stream = File.Open(_filename, FileMode.Open))
+                lock (_syncRoot)
                 {
-                    XDocument document = XDocument.Load(stream);
-
-                    foreach (XElement section in document.Root.DescendantNodes())
+                    using (IsolatedStorageFileStream stream = _store.OpenFile(Paths.ConfigFile, FileMode.Open))
                     {
-                        try
-                        {
-                            Dictionary<string, string> sectionTable = new Dictionary<string, string>();
-                            _sections.Add(section.Attribute("name").Value, sectionTable);
+                        XDocument document = XDocument.Load(stream);
 
-                            foreach (XElement element in section.DescendantNodes())
+                        foreach (XElement section in document.Root.Descendants("section"))
+                        {
+                            try
                             {
-                                try
+                                Dictionary<string, string> sectionTable = new Dictionary<string, string>();
+                                _sections.Add(section.Attribute("name").Value, sectionTable);
+
+                                foreach (XElement element in section.DescendantNodes())
                                 {
-                                    sectionTable.Add(element.Attribute("name").Value, element.Attribute("value").Value);
-                                }
-                                catch (Exception e)
-                                {
-                                    Tracer.Error(e);
+                                    try
+                                    {
+                                        sectionTable.Add(element.Attribute("name").Value, element.Attribute("value").Value);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Tracer.Error(e);
+                                    }
                                 }
                             }
-                        }
-                        catch (Exception e)
-                        {
-                            Tracer.Error(e);
+                            catch (Exception e)
+                            {
+                                Tracer.Error(e);
+                            }
                         }
                     }
                 }
@@ -76,7 +83,7 @@ namespace Client.Configuration
         {
             try
             {
-                FileSystemHelper.EnsureDirectoryExists(Paths.StorageFolder);
+                //FileSystemHelper.EnsureDirectoryExists(Paths.StorageFolder);
                 XmlWriterSettings settings = new XmlWriterSettings();
 
                 settings.CheckCharacters = false;
@@ -105,8 +112,11 @@ namespace Client.Configuration
                     configuration.Add(xSection);
                 }
 
-                using (FileStream stream = File.Open(_filename, FileMode.OpenOrCreate))
-                    document.Save(stream);
+                lock (_syncRoot)
+                {
+                    using (IsolatedStorageFileStream stream = _store.OpenFile(Paths.ConfigFile, FileMode.Create))
+                        document.Save(stream);
+                }
             }
             catch (Exception e)
             {

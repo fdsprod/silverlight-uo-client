@@ -1,25 +1,16 @@
 ﻿
 using System;
 using System.IO;
+using System.IO.IsolatedStorage;
 namespace Client.IO
 {
     public static class Paths
     {
-        public static string StorageFolder
+        public static string LogsDirectory
         {
             get
             {
-                return Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                    "Silverlight UO Client");
-            }
-        }
-
-        public static string Logs
-        {
-            get
-            {
-                return Path.Combine(StorageFolder, "logs");
+                return "logs";
             }
         }
 
@@ -27,7 +18,7 @@ namespace Client.IO
         {
             get
             {
-                return Path.Combine(StorageFolder, "config.xml");
+                return "config.xml";
             }
         }
     }

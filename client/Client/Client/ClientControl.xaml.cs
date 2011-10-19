@@ -5,12 +5,14 @@ using System.Windows.Graphics;
 using Client.Configuration;
 using Client.Diagnostics;
 using Client.Input;
+using System;
 
 namespace Client
 {
     public partial class ClientControl
     {
         private Engine _game;
+        private bool _exception;
 
         public ClientControl()
         {
@@ -19,8 +21,26 @@ namespace Client
 
         private void OnDraw(object sender, DrawEventArgs e)
         {
-            _game.Tick(e.DeltaTime, e.TotalTime);
-            e.InvalidateSurface();
+            try
+            {
+                if (!_exception)
+                {
+                    _game.Tick(e.DeltaTime, e.TotalTime);
+                    e.InvalidateSurface();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (!_exception)
+                {
+                    _exception = true;
+
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        throw new EngineException(ex);
+                    });
+                }
+            }
         }
 
         private void OnLoad(object sender, RoutedEventArgs e)
@@ -32,7 +52,6 @@ namespace Client
             }
 
             IConfigurationService configurationService = new ConfigurationService();
-            //IRenderer renderer = new Renderer();
 
             Tracer.TraceLevel = configurationService.GetValue<TraceLevels>(ConfigSections.Debug, ConfigKeys.DebugLogLevel);
             Tracer.Info("Checking for updates...");
@@ -49,27 +68,5 @@ namespace Client
 
             _game.Run();
         }
-
-        //void Current_CheckAndDownloadUpdateCompleted(object sender, CheckAndDownloadUpdateCompletedEventArgs e)
-        //{
-        //    //CheckingForUpdatesPanel.Visibility = Visibility.Collapsed;
-
-        //    if (e.Error != null)
-        //    {
-        //        Tracer.Error(e.Error);
-        //        MessageBox.Show("An error occurred while updating.");
-        //    }
-
-        //    if (e.UpdateAvailable)
-        //    {
-        //        Tracer.Info("Update available.");
-        //        //UpdatedPanel.Visibility = Visibility.Visible;
-        //    }
-        //}
-
-        //private void Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    //UpdatedPanel.Visibility = Visibility.Collapsed;
-        //}
     }
 }

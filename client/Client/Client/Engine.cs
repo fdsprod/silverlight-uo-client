@@ -32,6 +32,7 @@ namespace Client
         private bool _doneFirstUpdate;
         private bool _forceElapsedTimeToZero;
         private bool _suppressDraw;
+        private bool _shouldStop;
 
         private TimeSpan _totalGameTime;
         private TimeSpan _targetElapsedTime;
@@ -140,6 +141,12 @@ namespace Client
 
         public void Tick(TimeSpan elapsedTime, TimeSpan totalGameTime)
         {
+            if (_shouldStop)
+                return;
+
+            //if (_drawState.TotalGameTime > TimeSpan.FromSeconds(2))
+            //    throw new Exception();
+
             bool suppressDraw = true;
 
             if (elapsedTime < TimeSpan.Zero)
@@ -346,6 +353,11 @@ namespace Client
             {
                 _lastFrameElapsedGameTime = TimeSpan.Zero;
             }
+        }
+
+        internal void Stop()
+        {
+            _shouldStop = true;
         }
     }
 }
