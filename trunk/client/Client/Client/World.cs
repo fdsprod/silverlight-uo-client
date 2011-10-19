@@ -1,20 +1,10 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Client
 {
-    public sealed class World 
+    public sealed class World
     {
-        private ClientEngine _engine;
+        private Engine _engine;
 
         private Dictionary<Serial, Mobile> _mobiles;
         private Dictionary<Serial, Item> _items;
@@ -29,7 +19,7 @@ namespace Client
             get { return _items; }
         }
 
-        public World(ClientEngine engine)
+        public World(Engine engine)
         {
             _engine = engine;
 

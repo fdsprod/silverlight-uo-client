@@ -1,7 +1,6 @@
 ﻿
 using System;
 using System.IO;
-using System.Windows;
 namespace Client.IO
 {
     public static class Paths
@@ -10,9 +9,6 @@ namespace Client.IO
         {
             get
             {
-                if(!Application.Current.IsRunningOutOfBrowser)
-                    return string.Empty;
-
                 return Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                     "Silverlight UO Client");
@@ -23,9 +19,6 @@ namespace Client.IO
         {
             get
             {
-                if (!Application.Current.IsRunningOutOfBrowser)
-                    return string.Empty; 
-                
                 return Path.Combine(StorageFolder, "logs");
             }
         }
@@ -34,9 +27,6 @@ namespace Client.IO
         {
             get
             {
-                if (!Application.Current.IsRunningOutOfBrowser)
-                    return string.Empty;
-                
                 return Path.Combine(StorageFolder, "config.xml");
             }
         }

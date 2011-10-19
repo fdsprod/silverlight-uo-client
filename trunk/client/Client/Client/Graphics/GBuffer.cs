@@ -5,7 +5,7 @@ namespace Client.Graphics
 {
     public sealed class GBuffer
     {
-        private readonly ClientEngine _engine;
+        private readonly Engine _engine;
 
         private RenderTarget2D _diffuseTarget;
         private RenderTarget2D _normalTarget;
@@ -41,7 +41,7 @@ namespace Client.Graphics
             get { return _combineTarget; }
         }
 
-        public GBuffer(ClientEngine engine)
+        public GBuffer(Engine engine)
         {
             _engine = engine;
             _engine.DrawingSurface.SizeChanged += new SizeChangedEventHandler(OnDrawingSurfaceSizeChanged);

@@ -1,10 +1,15 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Graphics;
 using System.Windows.Input;
 
 using Client.Diagnostics;
+using Client.Graphics;
+using Client.Graphics.Shaders;
+using Client.Input;
+using Client.Ultima;
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -12,7 +17,9 @@ namespace Client
 {
     public class Engine
     {
-        private readonly TimeSpan _maximumElapsedTime = TimeSpan.FromMilliseconds(500.0);
+        public readonly TimeSpan TargetElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 60);
+        public readonly TimeSpan MaxElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 10);
+
         private readonly GameServiceContainer _gameServices;
         private readonly DrawState _drawState;
         private readonly UpdateState _updateState;
@@ -31,6 +38,11 @@ namespace Client
         private TimeSpan _accumulatedElapsedGameTime;
         private TimeSpan _lastFrameElapsedGameTime;
 
+        private Camera2D _camera;
+        private IInputService _inputService;
+        private TextureFactory _textureFactory;
+        private DeferredRenderer _renderer;
+        private DiffuseShader _shader;
         private ContentManager _content;
 
         public DrawingSurface DrawingSurface
@@ -41,16 +53,6 @@ namespace Client
         public GameServiceContainer Services
         {
             get { return _gameServices; }
-        }
-
-        public TimeSpan TargetElapsedTime
-        {
-            get { return _targetElapsedTime; }
-            set
-            {
-                Asserter.AssertIsNotLessThan("value", value, TimeSpan.Zero);
-                _targetElapsedTime = value;
-            }
         }
 
         public GraphicsDevice GraphicsDevice
@@ -76,14 +78,14 @@ namespace Client
 
         public Engine(DrawingSurface drawingSurface)
         {
+            RootControl = (Control)drawingSurface.Parent;
+
+            Asserter.AssertIsNotNull(RootControl, "RootControl");
             Asserter.AssertIsNotNull(drawingSurface, "drawingSurface");
 
             _drawingSurface = drawingSurface;
-            _drawingSurface.SizeChanged += OnDrawingSurfaceSizeChanged;
-            _content = new ContentManager(_gameServices)
-            {                
-                RootDirectory = "Content"
-            };
+            _content = new ContentManager(_gameServices);
+            _content.RootDirectory = "Content";
             _totalGameTime = TimeSpan.Zero;
             _accumulatedElapsedGameTime = TimeSpan.Zero;
             _lastFrameElapsedGameTime = TimeSpan.Zero;
@@ -91,9 +93,6 @@ namespace Client
             _drawState = new DrawState();
             _updateState = new UpdateState();
             _gameServices = new GameServiceContainer();
-
-            RootControl = (Control)drawingSurface.Parent;
-            Asserter.AssertIsNotNull(RootControl, "RootControl");
         }
 
         ~Engine()
@@ -152,8 +151,8 @@ namespace Client
                 _forceElapsedTimeToZero = false;
             }
 
-            if (elapsedTime > _maximumElapsedTime)
-                elapsedTime = _maximumElapsedTime;
+            if (elapsedTime > MaxElapsedTime)
+                elapsedTime = MaxElapsedTime;
 
             if (Math.Abs(elapsedTime.Ticks - _targetElapsedTime.Ticks) < _targetElapsedTime.Ticks >> 6)
                 elapsedTime = _targetElapsedTime;
@@ -205,51 +204,116 @@ namespace Client
                 DrawFrame();
         }
 
-        protected virtual void Initialize()
+        private void Initialize()
         {
+            _camera = new Camera2D(this);
+            _camera.NearClip = -1000;
+            _camera.FarClip = 1000;
+
+            _inputService = (IInputService)Services.GetService(typeof(IInputService));
+            _inputService.MouseMove += _inputService_MouseMove;
+            _inputService.KeyDown += _inputService_KeyDown;
+
+            _textureFactory = new TextureFactory(this);
+
+            _shader = new DiffuseShader(this);
+            _renderer = new DeferredRenderer(this);
+
             Tracer.Info("Loading Content...");
             LoadContent();
         }
 
-        protected virtual void Update(UpdateState state)
+        int _x = 187;
+        int _y = 203;
+
+        void _inputService_KeyDown(object sender, KeyStateEventArgs e)
         {
-            _doneFirstUpdate = true;
+            if (e.Key == Key.Up)
+                _y--;
+            if (e.Key == Key.Down)
+                _y++;
+            if (e.Key == Key.Left)
+                _x--;
+            if (e.Key == Key.Right)
+                _x++;
+
+            _y = Math.Max(0, _y);
+            _y = Math.Min(400, _y);
+
+            _x = Math.Max(0, _x);
+            _x = Math.Min(700, _x);
         }
 
-        protected virtual bool BeginDraw()
+        void _inputService_MouseMove(object sender, MouseStateEventArgs e)
+        {
+            if (_inputService.IsMouseDown(MouseButton.Left))
+                _camera.Position += e.PositionDelta;
+        }
+
+        private void Update(UpdateState state)
+        {
+
+        }
+
+        private bool BeginDraw()
         {
             return true;
         }
 
-        protected virtual void Draw(DrawState state) { }
+        private void Draw(DrawState state)
+        {
+            state.GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, new Color(0.2f, 0.2f, 0.2f, 1.0f), 1.0f, 0);
 
-        protected virtual void EndDraw() { }
+            state.PushView(_camera.View);
+            state.PushProjection(_camera.Projection);
 
-        protected virtual void LoadContent() { }
+            _shader.Bind(state);
 
-        protected virtual void UnloadContent() { }
+            DrawBlock(state, _x, _y);
 
-        protected virtual void OnDrawingSurfaceSizeChanged(object sender, SizeChangedEventArgs e) { }
+            state.PopView();
+            state.PopProjection();
+        }
 
-        protected virtual void OnMouseWheel(object sender, MouseWheelEventArgs e) { }
+        private void DrawBlock(DrawState state, int bx, int by)
+        {
+            Tile[] tiles = new Maps(this).Felucca.Tiles.GetLandBlock(bx, by);
 
-        protected virtual void OnMouseRightButtonUp(object sender, MouseButtonEventArgs e) { }
+            const int size = 8 * 44;
+            const int sizeOver2 = size / 2;
 
-        protected virtual void OnMouseRightButtonDown(object sender, MouseButtonEventArgs e) { }
+            for (int y = 0; y < 8; y++)
+            {
+                for (int x = 0; x < 8; x++)
+                {
+                    Tile tile = tiles[(y * 8) + x];
 
-        protected virtual void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) { }
+                    Vector2 v1 = new Vector2(-sizeOver2 + x * 44, -sizeOver2 + y * 44 + tile._z);
+                    Vector2 v2 = new Vector2(v1.X + 44, v1.Y + 44);
 
-        protected virtual void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e) { }
+                    state.GraphicsDevice.Textures[0] = _textureFactory.CreateLand(tile._id);
+                    _renderer.DrawQuad(v1, v2);
+                }
+            }
 
-        protected virtual void OnMouseLeave(object sender, MouseEventArgs e) { }
+        }
 
-        protected virtual void OnMouseEnter(object sender, MouseEventArgs e) { }
+        private void EndDraw()
+        {
 
-        protected virtual void OnKeyUp(object sender, KeyEventArgs e) { }
+        }
 
-        protected virtual void OnKeyDown(object sender, KeyEventArgs e) { }
+        private void LoadContent()
+        {
 
-        protected virtual void Dispose(bool disposing)
+        }
+
+        private void UnloadContent()
+        {
+
+        }
+
+        private void Dispose(bool disposing)
         {
             if (disposing)
             {
@@ -257,9 +321,6 @@ namespace Client
                 {
                     Tracer.Info("Unloading Content...");
                     UnloadContent();
-
-                    if (_drawingSurface != null)
-                        _drawingSurface.SizeChanged -= OnDrawingSurfaceSizeChanged;
                 }
             }
         }
@@ -274,6 +335,8 @@ namespace Client
                     _drawState.ElapsedGameTime = _lastFrameElapsedGameTime;
                     _drawState.IsRunningSlowly = _drawRunningSlowly;
                     _drawState.GraphicsDevice = GraphicsDevice;
+                    _drawState.Camera = _camera;
+                    _drawState.Reset();
 
                     Draw(_drawState);
                     EndDraw();

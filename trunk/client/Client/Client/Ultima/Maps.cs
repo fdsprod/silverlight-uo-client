@@ -9,7 +9,7 @@ namespace Client.Ultima
         public readonly Map Malas;
         public readonly Map Tokuno;
 
-        public Maps(ClientEngine engine)
+        public Maps(Engine engine)
         {
             Felucca = new Map(engine, 0, 0, 6144, 4096);
             Trammel = new Map(engine, 0, 1, 6144, 4096);
@@ -21,13 +21,13 @@ namespace Client.Ultima
 
     public class Map
     {
-        private readonly ClientEngine _engine;
+        private readonly Engine _engine;
 
         private TileMatrix _tiles;
         private readonly int _fileIndex, _mapID;
         private readonly int _width, _height;
 
-        internal Map(ClientEngine engine, int fileIndex, int mapID, int width, int height)
+        internal Map(Engine engine, int fileIndex, int mapID, int width, int height)
         {
             _engine = engine;
             _fileIndex = fileIndex;

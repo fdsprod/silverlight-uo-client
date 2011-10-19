@@ -4,7 +4,7 @@ namespace Client.Graphics.GooEee
 {
     public sealed class GooEeeManager
     {
-        public GooEeeManager(ClientEngine engine)
+        public GooEeeManager(Engine engine)
         {
             IInputService inputService = engine.Services.GetService<IInputService>();
 

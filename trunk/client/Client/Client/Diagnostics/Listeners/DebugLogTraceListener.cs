@@ -23,11 +23,8 @@ namespace Client.Diagnostics
                 syncRoot = new object();
                 _lockTable.Add(filename, syncRoot);
 
-                if (Application.Current.IsRunningOutOfBrowser)
-                {
-                    if (File.Exists(_filename))
-                        File.Delete(_filename);
-                }
+                if (File.Exists(_filename))
+                    File.Delete(_filename);
 
                 OnTraceReceived(new TraceMessage(TraceLevels.Verbose, DateTime.UtcNow, "Logging Started",
                     string.IsNullOrEmpty(Thread.CurrentThread.Name) ? Thread.CurrentThread.ManagedThreadId.ToString() : Thread.CurrentThread.Name));
