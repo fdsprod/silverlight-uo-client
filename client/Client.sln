@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client\Client.csproj", "{4B97234F-9DE2-4165-9DF0-DB8DF049422B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Web", "Client\Client.Web\Client.Web.csproj", "{41FBC706-D6F3-4072-BADC-D30CDA02E436}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4B97234F-9DE2-4165-9DF0-DB8DF049422B} = {4B97234F-9DE2-4165-9DF0-DB8DF049422B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Content", "Client\Client.Content\Client.Content.contentproj", "{9F2A6B9C-0951-4666-9D93-C3E58B6AE5C5}"
 EndProject

@@ -5,7 +5,7 @@ namespace Client.Graphics
 {
     public class Camera2D : ICamera
     {
-        private readonly ClientEngine _engine;
+        private readonly Engine _engine;
 
         private int _width;
         private int _height;
@@ -15,6 +15,7 @@ namespace Client.Graphics
         private bool _transformDirty;
         private bool _boundingFrustumDirty;
         private Vector3 _position;
+        private Vector2 _halfVector;
         private Matrix _view;
         private Matrix _projection;
         private BoundingFrustum _boundingFrustum;
@@ -98,7 +99,12 @@ namespace Client.Graphics
             }
         }
 
-        public Camera2D(ClientEngine engine)
+        public Vector2 HalfVector
+        {
+            get { return _halfVector; }
+        }
+
+        public Camera2D(Engine engine)
         {
             _projectionDirty = true;
             _transformDirty = true;
@@ -115,6 +121,7 @@ namespace Client.Graphics
         {
             _width = (int)_engine.DrawingSurface.ActualWidth;
             _height = (int)_engine.DrawingSurface.ActualHeight;
+            _halfVector = new Vector2(0.5f / _width, 0.5f / _height);
             _projectionDirty = true;
             _boundingFrustumDirty = true;
         }

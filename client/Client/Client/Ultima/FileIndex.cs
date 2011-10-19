@@ -8,6 +8,7 @@ namespace Client.Ultima
         private readonly Entry3D[] _index;
         private readonly string _indexPath;
         private readonly string _mulPath;
+        private readonly bool _filesExist;
 
         private Stream _stream;
 
@@ -31,9 +32,14 @@ namespace Client.Ultima
             get { return _mulPath; }
         }
 
+        public bool FilesExist
+        {
+            get { return _filesExist; }
+        }
+
         public Stream Seek(int index, out int length, out int extra, out bool patched)
         {
-            if (index < 0 || index >= _index.Length)
+            if (!_filesExist || index < 0 || index >= _index.Length)
             {
                 length = extra = 0;
                 patched = false;
@@ -81,22 +87,28 @@ namespace Client.Ultima
                 _stream = new FileStream(_mulPath, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
 
-        public FileIndex(ClientEngine engine, string idxFile, string mulFile, int length, int file)
+        public FileIndex(Engine engine, string idxFile, string mulFile, int length, int file)
         {
             IConfigurationService configurationService = engine.Services.GetService<IConfigurationService>();
 
             string ultimaOnlineDirectory = configurationService.GetValue<string>(ConfigSections.UltimaOnline, ConfigKeys.UltimaOnlineDirectory);
 
-            Asserter.AssertIsNotNullOrEmpty(ultimaOnlineDirectory, "ultimaOnlineDirectory");
-            Asserter.AssertDirectoryExists(ultimaOnlineDirectory);
+            if (!Directory.Exists(ultimaOnlineDirectory))
+            {
+                _filesExist = false;
+                return;
+            }
 
             _index = new Entry3D[length];
 
             _indexPath = Path.Combine(ultimaOnlineDirectory, idxFile);
             _mulPath = Path.Combine(ultimaOnlineDirectory, mulFile);
 
-            Asserter.AssertFileExists(_indexPath);
-            Asserter.AssertFileExists(_mulPath);
+            if (!File.Exists(_indexPath) || !File.Exists(_mulPath))
+            {
+                _filesExist = false;
+                return;
+            }
 
             if (_indexPath != null && _mulPath != null)
             {
@@ -123,19 +135,7 @@ namespace Client.Ultima
                 }
             }
 
-            //Entry5D[] patches = Verdata.Patches;
-
-            //for (int i = 0; i < patches.Length; ++i)
-            //{
-            //    Entry5D patch = patches[i];
-
-            //    if (patch.file == file && patch.index >= 0 && patch.index < length)
-            //    {
-            //        m_Index[patch.index].lookup = patch.lookup;
-            //        m_Index[patch.index].length = patch.length | (1 << 31);
-            //        m_Index[patch.index].extra = patch.extra;
-            //    }
-            //}
+            _filesExist = true;
         }
     }
 

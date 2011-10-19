@@ -40,11 +40,11 @@ namespace Client
             set;
         }
 
-        public Cube(ClientEngine engine, float size)
+        public Cube(Engine engine, float size)
         {
             this.graphicsDevice = engine.GraphicsDevice;
             this.mySilverlightEffect = engine.Content.Load<SilverlightEffect>("CustomEffect");
-       
+
             // Cache effect parameters
             worldViewProjectionParameter = mySilverlightEffect.Parameters["WorldViewProjection"];
             //lightDirectionParameter = mySilverlightEffect.Parameters["LightDirection"];
@@ -103,9 +103,9 @@ namespace Client
             VerticesCount = vertices.Count;
             FaceCount = indices.Count / 3;
         }
-        
+
         public void Draw()
-        {            
+        {
             foreach (var pass in mySilverlightEffect.CurrentTechnique.Passes)
             {
                 // Apply pass

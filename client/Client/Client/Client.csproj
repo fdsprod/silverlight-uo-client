@@ -25,14 +25,14 @@
     <TestPageFileName>ClientTestPage.html</TestPageFileName>
     <CreateTestPage>true</CreateTestPage>
     <ValidateXaml>true</ValidateXaml>
-    <EnableOutOfBrowser>true</EnableOutOfBrowser>
+    <EnableOutOfBrowser>false</EnableOutOfBrowser>
     <OutOfBrowserSettingsFile>Properties\OutOfBrowserSettings.xml</OutOfBrowserSettingsFile>
     <UsePlatformExtensions>false</UsePlatformExtensions>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
     <LinkedServerProject>
     </LinkedServerProject>
     <InBrowserSettingsFile>Properties\InBrowserSettings.xml</InBrowserSettingsFile>
-    <RequireInBrowserElevation>false</RequireInBrowserElevation>
+    <RequireInBrowserElevation>true</RequireInBrowserElevation>
   </PropertyGroup>
   <!-- This property group is only here to support building this project using the
        MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs
@@ -64,14 +64,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Client.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>C82FF73C8EFBF0149AB00BF9AEBCD672140E031E</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>Signing\SilverlightCodeSigningCA.pfx</ManifestKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework" />
@@ -130,6 +135,7 @@
     <Compile Include="Graphics\Shaders\PointLightShader.cs" />
     <Compile Include="Graphics\Shaders\DeferredRenderShader.cs" />
     <Compile Include="Graphics\Shaders\ShaderBase.cs" />
+    <Compile Include="Graphics\Textures\TextureFactory.cs" />
     <Compile Include="Input\IInputService.cs" />
     <Compile Include="Input\KeyStateEventArgs.cs" />
     <Compile Include="Input\MouseButton.cs" />
@@ -156,7 +162,6 @@
     </Compile>
     <Compile Include="Extensions\ByteArrayExtensions.cs" />
     <Compile Include="Collections\Cache.cs" />
-    <Compile Include="ClientEngine.cs" />
     <Compile Include="Diagnostics\ITraceListener.cs" />
     <Compile Include="Diagnostics\Listeners\DebugTraceListener.cs" />
     <Compile Include="Diagnostics\Listeners\DebugLogTraceListener.cs" />
@@ -169,7 +174,6 @@
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="GameServiceContainer.cs" />
     <Compile Include="Graphics\Textures\ITextureFactory.cs" />
-    <Compile Include="Graphics\Textures\TextureFactory.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="Graphics\VertexPositionNormalTexture.cs" />
     <Compile Include="Graphics\Shapes\Cube.cs" />
@@ -250,7 +254,13 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Client.snk" />
     <None Include="Properties\AppManifest.xml" />
+    <None Include="Signing\SilverlightCA.cer" />
+    <None Include="Signing\SilverlightCA.pvk" />
+    <None Include="Signing\SilverlightCodeSigningCA.cer" />
+    <None Include="Signing\SilverlightCodeSigningCA.pfx" />
+    <None Include="Signing\SilverlightCodeSigningCA.pvk" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\OutOfBrowserSettings.xml" />
@@ -261,10 +271,12 @@
   <ItemGroup>
     <Resource Include="Themes\background.png" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <PropertyGroup>
     <XnaContentProject>..\Client.Content\Client.Content.contentproj</XnaContentProject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Bin\signtool.exe" sign /v /f "$(ProjectDir)Signing\SilverlightCodeSigningCA.pfx" /p client "$(SolutionDir)Client\Client.Web\ClientBin\Client.xap"</PostBuildEvent>
   </PropertyGroup>
   <Target Name="BeforeBuild">
     <MSBuild Projects="$(XnaContentProject)" Properties="XnaContentPipelineTargetPlatform=Windows;XnaContentPipelineTargetProfile=Reach" />

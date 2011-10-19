@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.IO.IsolatedStorage;
 using System.Windows;
 using Client.Diagnostics;
 using Client.IO;
@@ -8,6 +9,10 @@ namespace Client
 {
     public partial class App
     {
+        const long KB = 1024;
+        const long MB = KB * 1024;
+        const long GB = MB * 1024;
+
         public App()
         {
             Startup += Application_Startup;
@@ -19,17 +24,22 @@ namespace Client
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            var store = IsolatedStorageFile.GetUserStoreForApplication();
+
+            const long twoGB = GB * 4;
+
+            if (store.AvailableFreeSpace < twoGB)
+            {
+                if (!store.IncreaseQuotaTo(twoGB))
+                {
+
+                }
+            }
+
             new DebugTraceListener { TraceLevel = TraceLevels.Verbose };
             new DebugLogTraceListener(Path.Combine(Paths.Logs, "debug.txt"));
 
-            if (IsRunningOutOfBrowser && InstallState == System.Windows.InstallState.Installed)
-            {
-                RootVisual = new ClientControl();
-            }
-            else
-            {
-                RootVisual = new InstallPrompt();
-            }
+            RootVisual = new ClientControl();
         }
 
         private static void Application_Exit(object sender, EventArgs e)

@@ -52,7 +52,7 @@ namespace Client.Input
             get { return _rightMouseButtonState; }
         }
 
-        public InputService(ClientEngine engine)
+        public InputService(Engine engine)
         {
             _pressedKeys = new List<Key>();
             _pressedPlatformKeyCodes = new List<int>();

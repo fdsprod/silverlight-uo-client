@@ -17,6 +17,7 @@ namespace Client.Network
         private IPEndPoint _hostEndPoint;
         private ByteQueue _buffer;
         private DateTime _connectedOn;
+        private PacketRegistry _packetRegistry;
 
         private bool _compressionEnabled;
         private bool _isConnected;
@@ -56,6 +57,19 @@ namespace Client.Network
             set { _compressionEnabled = value; }
         }
 
+        public event EventHandler Connected;
+
+        public NetState(PacketRegistry packetRegistry)
+        {
+            Asserter.AssertIsNotNull(packetRegistry, "packetRegistry");
+
+            _packetRegistry = packetRegistry;
+            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _recvBuffer = new BufferPool("Receive Buffer", 16, 4096);
+            _messagePump = new MessagePump();
+            _buffer = new ByteQueue();
+        }
+
         public void BeginReceive()
         {
             SocketAsyncEventArgs args = new SocketAsyncEventArgs();
@@ -68,16 +82,6 @@ namespace Client.Network
             args.Completed += OnReceive;
 
             _socket.ReceiveAsync(args);
-        }
-
-        public event EventHandler Connected;
-
-        public NetState()
-        {
-            _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            _recvBuffer = new BufferPool("Receive Buffer", 16, 4096);
-            _messagePump = new MessagePump();
-            _buffer = new ByteQueue();
         }
 
         public void Connect(string ip, int port)
@@ -250,7 +254,7 @@ namespace Client.Network
 
         internal PacketHandler GetHandler(int packetID)
         {
-            return PacketHandlers.GetHandler(packetID);
+            return _packetRegistry.GetHandler(packetID);
         }
     }
 }

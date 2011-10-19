@@ -1,7 +1,7 @@
 ﻿using System;
 using Client.Collections;
-using Microsoft.Xna.Framework.Graphics;
 using Client.Ultima;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Client.Graphics
 {
@@ -24,7 +24,7 @@ namespace Client.Graphics
             get { return _landCache; }
         }
 
-        public TextureFactory(ClientEngine engine)
+        public TextureFactory(Engine engine)
         {
             _missingTexture = engine.Content.Load<Texture2D>("Textures\\missing-texture");
             _landCache = new Cache<int, Texture2D>(TimeSpan.FromMinutes(5), 0x1000);
@@ -39,9 +39,12 @@ namespace Client.Graphics
             if (texture != null)
                 return texture;
 
-            return _landCache[index] = _textures.CreateTexture(index);
+            texture = _textures.CreateTexture(index);
 
-            //return _missingTexture;
+            if (texture == null)
+                return _missingTexture;
+
+            return _landCache[index] = texture;
         }
 
         public Texture2D CreateStatic(int index)

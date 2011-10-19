@@ -10,13 +10,16 @@ namespace Client.Ultima
     {
         private readonly FileIndex _fileIndex;
 
-        public Textures(ClientEngine engine)
+        public Textures(Engine engine)
         {
             _fileIndex = new FileIndex(engine, "texidx.mul", "texmaps.mul", 0x1000, 10);
         }
 
         public unsafe Texture2D CreateTexture(int index)
         {
+            if (!_fileIndex.FilesExist)
+                return null;
+
             int length, extra;
             bool patched;
 
@@ -69,6 +72,9 @@ namespace Client.Ultima
         {
             diffuseTexture = null;
             normalTexture = null;
+
+            if (!_fileIndex.FilesExist)
+                return;
 
             int length, extra;
             bool patched;

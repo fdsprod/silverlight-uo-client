@@ -1,7 +1,7 @@
 float4x4 WorldViewProjection;
 
 texture Texture;
-float2 ScreenSize;
+float2 HalfVector;
 
 sampler2D TextureSampler = sampler_state {
     Texture = (Texture);
@@ -35,7 +35,7 @@ VS_OUTPUT Diffuse_VertexShader(VS_INPUT IN)
 
 float4 Diffuse_PixelShader(VS_OUTPUT IN) : COLOR
 {
-	float4 diffuse = tex2D(TextureSampler, IN.TexCoord);
+	float4 diffuse = tex2D(TextureSampler, IN.TexCoord - HalfVector);
 
 	return float4(diffuse.rgb, 1);
 }

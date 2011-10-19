@@ -48,7 +48,7 @@ namespace Client.Ultima
             get { return _emptyStaticBlock; }
         }
 
-        public TileMatrix(ClientEngine engine, int fileIndex, int mapID, int width, int height)
+        public TileMatrix(Engine engine, int fileIndex, int mapID, int width, int height)
         {
             IConfigurationService configurationService = engine.Services.GetService<IConfigurationService>();
 
@@ -61,23 +61,26 @@ namespace Client.Ultima
             {
                 string ultimaOnlineDirectory = configurationService.GetValue<string>(ConfigSections.UltimaOnline, ConfigKeys.UltimaOnlineDirectory);
 
-                string mapPath = Path.Combine(ultimaOnlineDirectory, string.Format("map{0}.mul", fileIndex));
-
-                if (mapPath != null)
-                    _mapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-                string indexPath = Path.Combine(ultimaOnlineDirectory, string.Format("staidx{0}.mul", fileIndex));
-
-                if (indexPath != null)
+                if (Directory.Exists(ultimaOnlineDirectory))
                 {
-                    _indexStream = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    _indexReader = new BinaryReader(_indexStream);
+                    string mapPath = Path.Combine(ultimaOnlineDirectory, string.Format("map{0}.mul", fileIndex));
+
+                    if (mapPath != null)
+                        _mapStream = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+                    string indexPath = Path.Combine(ultimaOnlineDirectory, string.Format("staidx{0}.mul", fileIndex));
+
+                    if (File.Exists(indexPath))
+                    {
+                        _indexStream = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                        _indexReader = new BinaryReader(_indexStream);
+                    }
+
+                    string staticsPath = Path.Combine(ultimaOnlineDirectory, string.Format("statics{0}.mul", fileIndex));
+
+                    if (File.Exists(staticsPath))
+                        _staticsStream = new FileStream(staticsPath, FileMode.Open, FileAccess.Read, FileShare.Read);
                 }
-
-                string staticsPath = Path.Combine(ultimaOnlineDirectory, string.Format("statics{0}.mul", fileIndex));
-
-                if (staticsPath != null)
-                    _staticsStream = new FileStream(staticsPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             }
 
             _emptyStaticBlock = new HuedTile[8][][];
@@ -139,6 +142,9 @@ namespace Client.Ultima
 
         private unsafe HuedTile[][][] ReadStaticBlock(int x, int y)
         {
+            if (_indexReader == null)
+                return _emptyStaticBlock;
+
             _indexReader.BaseStream.Seek(((x * _blockHeight) + y) * 12, SeekOrigin.Begin);
 
             int lookup = _indexReader.ReadInt32();
@@ -213,6 +219,9 @@ namespace Client.Ultima
 
         private unsafe Tile[] ReadLandBlock(int x, int y)
         {
+            if (_mapStream == null)
+                return _invalidLandBlock;
+
             _mapStream.Seek(((x * _blockHeight) + y) * 196 + 4, SeekOrigin.Begin);
 
             Tile[] tiles = new Tile[64];
