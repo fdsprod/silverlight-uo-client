@@ -46,9 +46,8 @@ namespace Client.Network
             try
             {
                 string path = Path.Combine(Paths.LogsDirectory, "packets.log");                
-                IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication();
 
-                using (StreamWriter sw = new StreamWriter(store.OpenFile(path, FileMode.OpenOrCreate)))
+                using (StreamWriter sw = new StreamWriter(path, true))
                 {
                     sw.BaseStream.Seek(sw.BaseStream.Length, SeekOrigin.Begin);
 

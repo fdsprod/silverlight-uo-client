@@ -77,6 +77,11 @@ namespace Client
             get { return _projectionMatrixStack.Peek(); }
         }
 
+        public PresentationParameters PresentationParameters
+        {
+            get { return _graphicsDevice.PresentationParameters; }
+        }
+
         public DrawState()
         {
             _worldMatrixStack = new Stack<Matrix>();

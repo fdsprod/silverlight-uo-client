@@ -239,6 +239,7 @@ namespace Client.Ultima
                     {
                         ptr->_id = reader.ReadInt16();
                         ptr->_z = reader.ReadSByte();
+
                         ptr++;
                     }
                 }

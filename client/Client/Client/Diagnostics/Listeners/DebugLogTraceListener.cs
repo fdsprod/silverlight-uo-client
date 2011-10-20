@@ -11,7 +11,6 @@ namespace Client.Diagnostics
     public sealed class DebugLogTraceListener : TraceListener
     {
         private static readonly Dictionary<string, object> _lockTable = new Dictionary<string, object>();
-        private static readonly IsolatedStorageFile _store = IsolatedStorageFile.GetUserStoreForApplication();
         private readonly string _filename;
 
         public DebugLogTraceListener(string filename)
@@ -25,8 +24,8 @@ namespace Client.Diagnostics
                 syncRoot = new object();
                 _lockTable.Add(filename, syncRoot);
 
-                if (_store.FileExists(_filename))
-                    _store.DeleteFile(_filename);
+                if (File.Exists(_filename))
+                    File.Delete(_filename);
 
                 OnTraceReceived(new TraceMessage(TraceLevels.Verbose, DateTime.UtcNow, "Logging Started",
                     string.IsNullOrEmpty(Thread.CurrentThread.Name) ? Thread.CurrentThread.ManagedThreadId.ToString() : Thread.CurrentThread.Name));
@@ -45,7 +44,7 @@ namespace Client.Diagnostics
 
                     FileSystemHelper.EnsureDirectoryExists(directory);
 
-                    using (StreamWriter writer = new StreamWriter(_store.OpenFile(_filename, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read)))
+                    using (StreamWriter writer = new StreamWriter(_filename))
                     {
                         writer.WriteLine(message);
                         writer.Flush();

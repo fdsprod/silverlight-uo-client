@@ -8,9 +8,11 @@
              mc:Ignorable="d">
 
     <Grid Background="Gainsboro">
-        <!--<Grid.Background>
+        <!--
+            <Grid.Background>
             <ImageBrush ImageSource="/Client;component/Resources/Background.png" />
-        </Grid.Background>-->
+            </Grid.Background>
+        -->
         <Border MaxWidth="600"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
@@ -51,20 +53,25 @@
                            Margin="5"
                            FontSize="12"
                            Foreground="Black"
-                           Text="Oh Noes!  A runtime error has occured. Please provide the information in the box below when when creating a support ticket."
+                           Text="Oh Noes!  A runtime error has occured. Please provide the information in the box below when reporting the error."
                            TextAlignment="Left"
                            TextWrapping="Wrap" />
                 <TextBox Grid.Row="1"
                          Grid.Column="1"
                          Height="100"
                          Margin="5"
-                         IsHitTestVisible="False"
-                         IsTabStop="False"
+                         HorizontalScrollBarVisibility="Auto"
+                         IsReadOnly="True"
                          Text="{Binding Exception}"
-                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                         ScrollViewer.VerticalScrollBarVisibility="Auto"
-                         Background="WhiteSmoke"/>
-                <HyperlinkButton ClickMode="Release" NavigateUri="http://code.google.com/p/silverlight-uo-client/issues/list" Grid.Row="2" HorizontalAlignment="Right" Grid.ColumnSpan="2" Margin="5" Content="Click here to create a aupport ticket" Foreground="Blue" TargetName="_blank" />
+                         TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto" />
+                <Button Grid.Row="2"
+                        Grid.ColumnSpan="2"
+                        Margin="5"
+                        HorizontalAlignment="Right"
+                        Click="Button_Click"
+                        ClickMode="Release"
+                        Content="Report Error" />
             </Grid>
         </Border>
     </Grid>

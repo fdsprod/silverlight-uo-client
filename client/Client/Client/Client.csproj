@@ -25,7 +25,7 @@
     <TestPageFileName>ClientTestPage.html</TestPageFileName>
     <CreateTestPage>true</CreateTestPage>
     <ValidateXaml>true</ValidateXaml>
-    <EnableOutOfBrowser>false</EnableOutOfBrowser>
+    <EnableOutOfBrowser>true</EnableOutOfBrowser>
     <OutOfBrowserSettingsFile>Properties\OutOfBrowserSettings.xml</OutOfBrowserSettingsFile>
     <UsePlatformExtensions>false</UsePlatformExtensions>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
@@ -64,7 +64,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -123,6 +123,9 @@
       <DependentUpon>ExceptionControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ExceptionViewModel.cs" />
+    <Compile Include="ContentHost.xaml.cs">
+      <DependentUpon>ContentHost.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GameState.cs" />
     <Compile Include="Graphics\Camera2D.cs" />
     <Compile Include="Graphics\GBuffer.cs" />
@@ -159,7 +162,6 @@
     <Compile Include="Ultima\Tile.cs" />
     <Compile Include="Ultima\TileData.cs" />
     <Compile Include="Ultima\TileFlag.cs" />
-    <Compile Include="Ultima\TileList.cs" />
     <Compile Include="Ultima\TileMatrix.cs" />
     <Compile Include="UpdateState.cs" />
     <Compile Include="UpdatingPrompt.xaml.cs">
@@ -182,8 +184,8 @@
     <Compile Include="ICloneable.cs" />
     <Compile Include="Graphics\VertexPositionNormalTexture.cs" />
     <Compile Include="Graphics\Shapes\Cube.cs" />
-    <Compile Include="ClientControl.xaml.cs">
-      <DependentUpon>ClientControl.xaml</DependentUpon>
+    <Compile Include="GameHost.xaml.cs">
+      <DependentUpon>GameHost.xaml</DependentUpon>
     </Compile>
     <Compile Include="Input\CommandBase.cs" />
     <Compile Include="Input\IRaiseCanExecuteChanged.cs" />
@@ -210,7 +212,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Graphics\VertexPositionColorNormal.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
-    <Compile Include="Text\ASCIIEncoding.cs" />
+    <Compile Include="Ultima\Text\ASCIIEncoding.cs" />
     <Compile Include="Threading\DispatcherProxy.cs" />
     <Compile Include="TypeDescriptor.cs" />
     <Compile Include="Ultima\FileIndex.cs" />
@@ -225,7 +227,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
-    <Page Include="ClientControl.xaml">
+    <Page Include="GameHost.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -234,6 +236,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ExceptionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ContentHost.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

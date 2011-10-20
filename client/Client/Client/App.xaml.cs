@@ -12,12 +12,8 @@ namespace Client
 {
     public partial class App
     {
-        const long KB = 1024;
-        const long MB = KB * 1024;
-        const long GB = MB * 1024;
-
-        private static Grid _root;
-        private static ClientControl _clientControl;
+        private static ContentHost _gameHost;
+        private static GameHost _clientControl;
 
         public App()
         {
@@ -30,35 +26,30 @@ namespace Client
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            var store = IsolatedStorageFile.GetUserStoreForApplication();
+            Application.Current.CheckAndDownloadUpdateCompleted += new CheckAndDownloadUpdateCompletedEventHandler(Current_CheckAndDownloadUpdateCompleted);
+            Application.Current.CheckAndDownloadUpdateAsync();
 
-            if (store.Quota < GB)
-            {
-                if (!store.IncreaseQuotaTo(GB))
-                {
-                    MessageBox.Show("Silverlight UO Client cannot continue until more storage is made available.");
-                    return;
-                }
-            }
-            else if (store.AvailableFreeSpace < 200 * MB)
-            {
-                if (!store.IncreaseQuotaTo(store.Quota + GB))
-                {
-                    MessageBox.Show("Silverlight UO Client may have trouble running due to limitted available storage.");
-                }
-            }
-            
             Application.Current.Host.Settings.EnableFrameRateCounter = true;
             Application.Current.Host.Settings.MaxFrameRate = int.MaxValue;
 
             new DebugTraceListener { TraceLevel = TraceLevels.Verbose };
             new DebugLogTraceListener(Path.Combine(Paths.LogsDirectory, "debug.txt"));
 
-            _root = new Grid();
-            _clientControl = new ClientControl();
-            _root.Children.Add(_clientControl);
+            _gameHost = new ContentHost();
+            _clientControl = new GameHost();
+            _gameHost.LayoutRoot.Children.Add(_clientControl);
 
-            RootVisual = _root;
+            RootVisual = _gameHost;
+        }
+
+        void Current_CheckAndDownloadUpdateCompleted(object sender, CheckAndDownloadUpdateCompletedEventArgs e)
+        {
+            if (e.Error != null)
+            {
+                MessageBox.Show(e.Error.ToString());
+
+
+            }
         }
 
         private static void Application_Exit(object sender, EventArgs e)
@@ -80,8 +71,8 @@ namespace Client
             viewModel.Exception = e.ExceptionObject.ToString();
             control.DataContext = viewModel;
 
-            _root.Children.Clear();
-            _root.Children.Add(control);
+            _gameHost.LayoutRoot.Children.Clear();
+            _gameHost.LayoutRoot.Children.Add(control);
         }
 
         private static string GenerateCrashReport(Exception e)
