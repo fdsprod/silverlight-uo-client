@@ -17,9 +17,8 @@ namespace Client.Configuration
 
         private readonly string _filename;
         private readonly Dictionary<string, Dictionary<string, string>> _sections;
-        private IsolatedStorageFile _store = IsolatedStorageFile.GetUserStoreForApplication();
 
-        public bool Exists { get { return _store.FileExists(_filename); } }
+        public bool Exists { get { return File.Exists(_filename); } }
 
         public ConfigFile(string filename)
         {
@@ -42,7 +41,7 @@ namespace Client.Configuration
             {
                 lock (_syncRoot)
                 {
-                    using (IsolatedStorageFileStream stream = _store.OpenFile(Paths.ConfigFile, FileMode.Open))
+                    using (Stream stream = File.Open(Paths.ConfigFile, FileMode.Open))
                     {
                         XDocument document = XDocument.Load(stream);
 
@@ -114,7 +113,7 @@ namespace Client.Configuration
 
                 lock (_syncRoot)
                 {
-                    using (IsolatedStorageFileStream stream = _store.OpenFile(Paths.ConfigFile, FileMode.Create))
+                    using (Stream stream = File.Open(Paths.ConfigFile, FileMode.Create))
                         document.Save(stream);
                 }
             }

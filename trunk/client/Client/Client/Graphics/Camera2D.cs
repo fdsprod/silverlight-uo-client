@@ -55,10 +55,10 @@ namespace Client.Graphics
                 if (_transformDirty)
                 {
                     _transformDirty = false;
+                    //Matrix rotation;
+                    //Matrix.CreateRotationZ(MathHelper.ToRadians(-45), out rotation);
                     Matrix.CreateTranslation(ref _position, out _view);
-                    Matrix rotation;
-                    Matrix.CreateRotationZ(MathHelper.ToRadians(45), out rotation);
-                    Matrix.Multiply(ref _view, ref rotation, out _view);
+                    //Matrix.Multiply(ref _view, ref rotation, out _view);
                 }
 
                 return _view;
@@ -121,7 +121,7 @@ namespace Client.Graphics
         {
             _width = (int)_engine.DrawingSurface.ActualWidth;
             _height = (int)_engine.DrawingSurface.ActualHeight;
-            _halfVector = new Vector2(0.5f / _width, 0.5f / _height);
+            _halfVector = new Vector2(1f / _width, 1f / _height);
             _projectionDirty = true;
             _boundingFrustumDirty = true;
         }

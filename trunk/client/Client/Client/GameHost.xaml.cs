@@ -9,12 +9,12 @@ using System;
 
 namespace Client
 {
-    public partial class ClientControl
+    public partial class GameHost
     {
         private Engine _game;
         private bool _exception;
 
-        public ClientControl()
+        public GameHost()
         {
             InitializeComponent();
         }

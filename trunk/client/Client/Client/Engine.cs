@@ -12,6 +12,7 @@ using Client.Ultima;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System.Diagnostics;
 
 namespace Client
 {
@@ -45,6 +46,7 @@ namespace Client
         private DeferredRenderer _renderer;
         private DiffuseShader _shader;
         private ContentManager _content;
+        private Maps _maps;
 
         public DrawingSurface DrawingSurface
         {
@@ -79,7 +81,7 @@ namespace Client
 
         public Engine(DrawingSurface drawingSurface)
         {
-            RootControl = (Control)drawingSurface.Parent;
+            RootControl = (Control)App.Current.RootVisual;
 
             Asserter.AssertIsNotNull(RootControl, "RootControl");
             Asserter.AssertIsNotNull(drawingSurface, "drawingSurface");
@@ -216,12 +218,13 @@ namespace Client
             _camera = new Camera2D(this);
             _camera.NearClip = -1000;
             _camera.FarClip = 1000;
-
+            _camera.Position = new Vector2(-64957, 72478);
             _inputService = (IInputService)Services.GetService(typeof(IInputService));
             _inputService.MouseMove += _inputService_MouseMove;
             _inputService.KeyDown += _inputService_KeyDown;
 
             _textureFactory = new TextureFactory(this);
+            _maps = new Maps(this);
 
             _shader = new DiffuseShader(this);
             _renderer = new DeferredRenderer(this);
@@ -273,10 +276,35 @@ namespace Client
 
             state.PushView(_camera.View);
             state.PushProjection(_camera.Projection);
+            
+            int camOverTileX = (int)state.Camera.Position.X / -44;
+            int camOverTileY = (int)state.Camera.Position.Y / 44;
+
+            int startX = camOverTileX - 16;
+            int endX = camOverTileX + 17;
+            int startY = camOverTileY - 16;
+            int endY = camOverTileY + 17;
+
+            Debug.WriteLine(string.Format("{0}, {1}", startX, endX));
+            Debug.WriteLine(string.Format("{0}, {1}", startY, endY));
+
+            for (int y = startY; y < endY; y++)
+            {
+                for (int x = startX; x < endX; x++)
+                {
+                    Tile tile = _maps.Felucca.Tiles.GetLandTile(x, y);
+                    
+                    Vector2 v1;
+                    v1.X = -22 + (x * 44);
+                    v1.Y = -22 + (y * -44) + tile._z * 4;
+                    Vector2 v2 = new Vector2(v1.X + 44, v1.Y + 44);
+
+                    _renderer.QueueQuad(v1, v2, _textureFactory.CreateLand(tile._id));
+                }
+            }
 
             _shader.Bind(state);
-
-            DrawBlock(state, _x, _y);
+            _renderer.Flush(state);
 
             state.PopView();
             state.PopProjection();

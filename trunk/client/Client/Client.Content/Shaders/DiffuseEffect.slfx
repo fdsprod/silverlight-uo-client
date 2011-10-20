@@ -5,8 +5,8 @@ float2 HalfVector;
 
 sampler2D TextureSampler = sampler_state {
     Texture = (Texture);
-    MinFilter = Linear;
-    MagFilter = Linear;
+    MinFilter = POINT;
+    MagFilter = POINT;
     AddressU = Clamp;
     AddressV = Clamp;
 };
@@ -28,6 +28,7 @@ VS_OUTPUT Diffuse_VertexShader(VS_INPUT IN)
     VS_OUTPUT OUT = (VS_OUTPUT)0;
 
     OUT.Position = mul(IN.Position, WorldViewProjection);
+    OUT.Position.xy -= float2(HalfVector.x, HalfVector.y);
 	OUT.TexCoord = IN.TexCoord;
 
     return OUT;
@@ -35,7 +36,7 @@ VS_OUTPUT Diffuse_VertexShader(VS_INPUT IN)
 
 float4 Diffuse_PixelShader(VS_OUTPUT IN) : COLOR
 {
-	float4 diffuse = tex2D(TextureSampler, IN.TexCoord - HalfVector);
+	float4 diffuse = tex2D(TextureSampler, IN.TexCoord);
 
 	return float4(diffuse.rgb, 1);
 }

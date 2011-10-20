@@ -1,8 +1,8 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace Client.Ultima
 {
-
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 1)]
     public struct Tile : IComparable
     {
