@@ -38,27 +38,27 @@ namespace Client.Ultima
             stream.Read(buffer, 0, buffer.Length);
             Buffer.BlockCopy(buffer, 0, pixels, 0, pixelCount * 2);
 
-            fixed (ushort* pPtr = pixels)
-            fixed (Color* cPtr = colors)
-            {
-                ushort* pixelPtr = pPtr;
-                Color* colorPtr = cPtr;
+            //fixed (ushort* pPtr = pixels)
+            //fixed (Color* cPtr = colors)
+            //{
+            //    ushort* pixelPtr = pPtr;
+            //    Color* colorPtr = cPtr;
 
-                int count = pixels.Length;
+            //    int count = pixels.Length;
 
-                for (int i = 0; i < count; i++)
-                {
-                    ushort pixel = *pixelPtr;
+            //    for (int i = 0; i < count; i++)
+            //    {
+            //        ushort pixel = *pixelPtr;
 
-                    colorPtr->R = (byte)(pixel & 0x1F);
-                    colorPtr->G = (byte)((pixel >> 5) & 0x1F);
-                    colorPtr->B = (byte)((pixel >> 10) & 0x1F);
-                    colorPtr->A = 255;
+            //        colorPtr->R = (byte)(pixel & 0x1F);
+            //        colorPtr->G = (byte)((pixel >> 5) & 0x1F);
+            //        colorPtr->B = (byte)((pixel >> 10) & 0x1F);
+            //        colorPtr->A = 255;
 
-                    colorPtr++;
-                    pixelPtr++;
-                }
-            }
+            //        colorPtr++;
+            //        pixelPtr++;
+            //    }
+            //}
 
             Texture2D texture = new Texture2D(GraphicsDeviceManager.Current.GraphicsDevice, size, size, false, SurfaceFormat.Bgra5551);
             texture.SetData(pixels);

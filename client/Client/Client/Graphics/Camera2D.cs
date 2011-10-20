@@ -19,6 +19,7 @@ namespace Client.Graphics
         private Matrix _view;
         private Matrix _projection;
         private BoundingFrustum _boundingFrustum;
+        private float _zoom;
 
         public BoundingFrustum BoundingFrustum
         {
@@ -41,7 +42,7 @@ namespace Client.Graphics
                 if (_projectionDirty)
                 {
                     _projectionDirty = false;
-                    Matrix.CreateOrthographic(_width, _height, _nearClip, _farClip, out _projection);
+                    Matrix.CreateOrthographic(_width / _zoom, _height / _zoom, _nearClip, _farClip, out _projection);
                 }
 
                 return _projection;
@@ -115,6 +116,8 @@ namespace Client.Graphics
 
             _width = (int)engine.DrawingSurface.ActualWidth;
             _height = (int)engine.DrawingSurface.ActualHeight;
+
+            Zoom = 1;
         }
 
         void OnDrawingSurfaceSizeChanged(object sender, SizeChangedEventArgs e)
@@ -124,6 +127,21 @@ namespace Client.Graphics
             _halfVector = new Vector2(1f / _width, 1f / _height);
             _projectionDirty = true;
             _boundingFrustumDirty = true;
+        }
+
+        public float Zoom
+        {
+            get { return _zoom; }
+            set
+            {
+                if (_zoom != value)
+                {
+                    value = MathHelper.Clamp(value, 0.1f, 2);
+
+                    _zoom = value;
+                    _projectionDirty = true;
+                }
+            }
         }
     }
 }

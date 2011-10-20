@@ -219,9 +219,11 @@ namespace Client
             _camera.NearClip = -1000;
             _camera.FarClip = 1000;
             _camera.Position = new Vector2(-64957, 72478);
+
             _inputService = (IInputService)Services.GetService(typeof(IInputService));
             _inputService.MouseMove += _inputService_MouseMove;
             _inputService.KeyDown += _inputService_KeyDown;
+            _inputService.MouseWheel += new EventHandler<MouseStateEventArgs>(_inputService_MouseWheel);
 
             _textureFactory = new TextureFactory(this);
             _maps = new Maps(this);
@@ -231,6 +233,11 @@ namespace Client
 
             Tracer.Info("Loading Content...");
             LoadContent();
+        }
+
+        void _inputService_MouseWheel(object sender, MouseStateEventArgs e)
+        {
+            _camera.Zoom += _camera.Zoom * 0.1f * e.WheelDelta / 120;
         }
 
         int _x = 187;
@@ -276,18 +283,28 @@ namespace Client
 
             state.PushView(_camera.View);
             state.PushProjection(_camera.Projection);
-            
+
+            _shader.Bind(state);
+
+            float tileSize = state.Camera.Zoom * 44;
+
+            float tilesX = state.PresentationParameters.BackBufferWidth / tileSize + 5;
+            float tilesY = state.PresentationParameters.BackBufferHeight / tileSize + 5;
+
+            if (tilesX % 1 > 0)
+                tilesX++;
+
+            if (tilesY % 1 > 0)
+                tilesY++;
+
             int camOverTileX = (int)state.Camera.Position.X / -44;
             int camOverTileY = (int)state.Camera.Position.Y / 44;
 
-            int startX = camOverTileX - 16;
-            int endX = camOverTileX + 17;
-            int startY = camOverTileY - 16;
-            int endY = camOverTileY + 17;
-
-            Debug.WriteLine(string.Format("{0}, {1}", startX, endX));
-            Debug.WriteLine(string.Format("{0}, {1}", startY, endY));
-
+            int startX = camOverTileX - (int)tilesX / 2;
+            int endX = camOverTileX + (int)tilesX / 2 + 1;
+            int startY = camOverTileY - (int)tilesY / 2;
+            int endY = camOverTileY + (int)tilesY / 2 + 1;
+            
             for (int y = startY; y < endY; y++)
             {
                 for (int x = startX; x < endX; x++)
@@ -295,15 +312,14 @@ namespace Client
                     Tile tile = _maps.Felucca.Tiles.GetLandTile(x, y);
                     
                     Vector2 v1;
-                    v1.X = -22 + (x * 44);
+                    v1.X = -22 + (x * 44 );
                     v1.Y = -22 + (y * -44) + tile._z * 4;
                     Vector2 v2 = new Vector2(v1.X + 44, v1.Y + 44);
 
-                    _renderer.QueueQuad(v1, v2, _textureFactory.CreateLand(tile._id));
+                    _renderer.QueueQuad(state, v1, v2, _textureFactory.CreateLand(tile._id));
                 }
             }
 
-            _shader.Bind(state);
             _renderer.Flush(state);
 
             state.PopView();
