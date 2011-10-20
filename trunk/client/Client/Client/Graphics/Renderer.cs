@@ -83,8 +83,11 @@ namespace Client.Graphics
             GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, _quadVertices, 0, 4, _quadIndices, 0, 2);
         }
 
-        internal void QueueQuad(Vector2 v1, Vector2 v2, Texture2D texture)
+        internal void QueueQuad(DrawState state, Vector2 v1, Vector2 v2, Texture2D texture)
         {
+            if (_currentVertex + 4 >= _vertices.Length)
+                Flush(state);
+
             _vertices[_currentVertex + 0].Position.X = v1.X;
             _vertices[_currentVertex + 0].Position.Y = v1.Y;
 

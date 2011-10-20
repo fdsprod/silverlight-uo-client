@@ -11,5 +11,7 @@ namespace Client.Graphics
         Matrix Projection { get; }
         Matrix View { get; }
         BoundingFrustum BoundingFrustum { get; }
+
+        float Zoom { get; set; }
     }
 }
