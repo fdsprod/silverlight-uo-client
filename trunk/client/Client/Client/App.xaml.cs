@@ -1,12 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
-using System.IO.IsolatedStorage;
+using System.Text;
 using System.Windows;
 using Client.Diagnostics;
 using Client.IO;
-using System.Windows.Controls;
-using System.Text;
-using System.Reflection;
 
 namespace Client
 {
@@ -26,31 +24,40 @@ namespace Client
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            Application.Current.CheckAndDownloadUpdateCompleted += new CheckAndDownloadUpdateCompletedEventHandler(Current_CheckAndDownloadUpdateCompleted);
-            Application.Current.CheckAndDownloadUpdateAsync();
+            //CheckAndDownloadUpdateCompleted += Current_CheckAndDownloadUpdateCompleted;
+            //CheckAndDownloadUpdateAsync();
 
-            Application.Current.Host.Settings.EnableFrameRateCounter = true;
-            Application.Current.Host.Settings.MaxFrameRate = int.MaxValue;
+            Host.Settings.EnableFrameRateCounter = true;
+            Host.Settings.MaxFrameRate = int.MaxValue;
 
-            new DebugTraceListener { TraceLevel = TraceLevels.Verbose };
-            new DebugLogTraceListener(Path.Combine(Paths.LogsDirectory, "debug.txt"));
+            if (Debugger.IsAttached)
+                new DebugTraceListener { TraceLevel = TraceLevels.Verbose };
+
+            if (IsRunningOutOfBrowser)
+                new DebugLogTraceListener(Path.Combine(Paths.LogsDirectory, "debug.txt"));
 
             _gameHost = new ContentHost();
-            _clientControl = new GameHost();
-            _gameHost.LayoutRoot.Children.Add(_clientControl);
+
+            if (IsRunningOutOfBrowser)
+            {
+                _clientControl = new GameHost();
+                _gameHost.LayoutRoot.Children.Add(_clientControl);
+            }
+            else
+            {
+                _gameHost.LayoutRoot.Children.Add(new InstallPrompt());
+            }
 
             RootVisual = _gameHost;
         }
 
-        void Current_CheckAndDownloadUpdateCompleted(object sender, CheckAndDownloadUpdateCompletedEventArgs e)
-        {
-            if (e.Error != null)
-            {
-                MessageBox.Show(e.Error.ToString());
-
-
-            }
-        }
+        //void Current_CheckAndDownloadUpdateCompleted(object sender, CheckAndDownloadUpdateCompletedEventArgs e)
+        //{
+        //    if (e.Error != null)
+        //    {
+        //        MessageBox.Show(e.Error.ToString());
+        //    }
+        //}
 
         private static void Application_Exit(object sender, EventArgs e)
         {
@@ -59,27 +66,56 @@ namespace Client
 
         private static void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
-            string errorMsg = e.ExceptionObject.Message + e.ExceptionObject.StackTrace;
-            errorMsg = errorMsg.Replace('"', '\'').Replace("\r\n", @"\n");
+            try
+            {
+                string errorMsg = e.ExceptionObject.Message + e.ExceptionObject.StackTrace;
+                errorMsg = errorMsg.Replace('"', '\'').Replace("\r\n", @"\n");
 
-            Tracer.Error(errorMsg);
-            e.Handled = true;
+                Tracer.Error(errorMsg);
+                e.Handled = true;
 
-            var control = new ExceptionControl();
-            var viewModel = new ExceptionViewModel();
+                var control = new ExceptionControl();
+                var viewModel = new ExceptionViewModel();
 
-            viewModel.Exception = e.ExceptionObject.ToString();
-            control.DataContext = viewModel;
+                viewModel.Exception = GenerateCrashReport(e.ExceptionObject);
+                control.DataContext = viewModel;
 
-            _gameHost.LayoutRoot.Children.Clear();
-            _gameHost.LayoutRoot.Children.Add(control);
+                _gameHost.LayoutRoot.Children.Clear();
+                _gameHost.LayoutRoot.Children.Add(control);
+            }
+            catch
+            {
+                try
+                {
+                    MessageBox.Show(e.ExceptionObject.ToString());
+                }
+                catch
+                {
+                    ReportErrorToDOM(e.ExceptionObject);
+                }
+            }
+        }
+
+        private static void ReportErrorToDOM(Exception e)
+        {
+            try
+            {
+                string errorMsg = e.Message + e.StackTrace;
+                errorMsg = errorMsg.Replace('"', '\'').Replace("\r\n", @"\n");
+
+                System.Windows.Browser.HtmlPage.Window.Eval("throw new Error(\"Unhandled Error in Silverlight Application " + errorMsg + "\");");
+            }
+            catch (Exception ex)
+            {
+                Tracer.Error(ex);
+            }
         }
 
         private static string GenerateCrashReport(Exception e)
         {
             try
             {
-                StringBuilder sb = new StringBuilder(); 
+                StringBuilder sb = new StringBuilder();
 
 
                 sb.AppendLine("Server Crash Report");
@@ -89,9 +125,8 @@ namespace Client
                 sb.AppendFormat("Operating System: {0}\n", Environment.OSVersion);
                 sb.AppendFormat("Silverlight Framework: {0}\n", Environment.Version);
                 sb.AppendFormat("Time: {0}\n", DateTime.Now);
-                sb.AppendFormat("HasElevatedPermissions: {0}", Application.Current.HasElevatedPermissions);
-                sb.AppendFormat("IsRunningOutOfBrowser: {0}", Application.Current.IsRunningOutOfBrowser);
-                //sb.AppendFormat("IsRunningOutOfBrowser: {0}",);                
+                sb.AppendFormat("HasElevatedPermissions: {0}", Current.HasElevatedPermissions);
+                sb.AppendFormat("IsRunningOutOfBrowser: {0}", Current.IsRunningOutOfBrowser);
                 sb.AppendLine("Exception:");
                 sb.AppendLine(e.ToString());
                 sb.AppendLine();
