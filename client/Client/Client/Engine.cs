@@ -218,12 +218,11 @@ namespace Client
             _camera = new Camera2D(this);
             _camera.NearClip = -1000;
             _camera.FarClip = 1000;
-            _camera.Position = new Vector2(-64957, 72478);
+            _camera.Position = new Vector2(1496, 1624);
 
             _inputService = (IInputService)Services.GetService(typeof(IInputService));
             _inputService.MouseMove += _inputService_MouseMove;
             _inputService.KeyDown += _inputService_KeyDown;
-            _inputService.MouseWheel += new EventHandler<MouseStateEventArgs>(_inputService_MouseWheel);
 
             _textureFactory = new TextureFactory(this);
             _maps = new Maps(this);
@@ -233,11 +232,6 @@ namespace Client
 
             Tracer.Info("Loading Content...");
             LoadContent();
-        }
-
-        void _inputService_MouseWheel(object sender, MouseStateEventArgs e)
-        {
-            _camera.Zoom += _camera.Zoom * 0.1f * e.WheelDelta / 120;
         }
 
         int _x = 187;
@@ -279,50 +273,79 @@ namespace Client
 
         private void Draw(DrawState state)
         {
-            state.GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, new Color(0.2f, 0.2f, 0.2f, 1.0f), 1.0f, 0);
-
-            state.PushView(_camera.View);
+            state.GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, new Color(0.2f, 0.2f, 0.5f, 1.0f), 1.0f, 0);
             state.PushProjection(_camera.Projection);
 
             _shader.Bind(state);
 
-            float tileSize = state.Camera.Zoom * 44;
+            const int TileSize = 44;
+            const int TileSizeOver2 = TileSize / 2;
+            const int TileStepX = 22;
+            const int TileStepY = 22;
 
-            float tilesX = state.PresentationParameters.BackBufferWidth / tileSize + 5;
-            float tilesY = state.PresentationParameters.BackBufferHeight / tileSize + 5;
-
-            if (tilesX % 1 > 0)
-                tilesX++;
-
-            if (tilesY % 1 > 0)
-                tilesY++;
-
-            int camOverTileX = (int)state.Camera.Position.X / -44;
-            int camOverTileY = (int)state.Camera.Position.Y / 44;
-
-            int startX = camOverTileX - (int)tilesX / 2;
-            int endX = camOverTileX + (int)tilesX / 2 + 1;
-            int startY = camOverTileY - (int)tilesY / 2;
-            int endY = camOverTileY + (int)tilesY / 2 + 1;
+            PresentationParameters pp = state.PresentationParameters;
             
+            Vector2 cameraOffset = new Vector2(0.5f, 0.5f);
+            Vector2 cameraPosition = state.Camera.Position + cameraOffset;
+            Vector2 viewSize = new Vector2(pp.BackBufferWidth, pp.BackBufferHeight);
+            Vector2 tileCounts = new Vector2(viewSize.X / 22, viewSize.Y / 22);
+            //Vector2 tileCountsOver2 = tileCounts / 2;
+
+            int startX = (int)(cameraPosition.X - tileCounts.X);
+            int startY = (int)(cameraPosition.Y - tileCounts.Y);
+            int endX = (int)(cameraPosition.X + tileCounts.X);
+            int endY = (int)(cameraPosition.Y + tileCounts.Y);
+
+            Vector2 offset, northVector, eastVector, westVector, southVector, center;
+            int tileZ, eastTileZ, southTileZ, downTileZ;
+
             for (int y = startY; y < endY; y++)
             {
+                offset.Y = ((tileCounts.Y * 2) + (startY - y)) * TileStepY;
+                offset.X = ((-tileCounts.X / 4) + (startY - y)) * TileStepY;
+
+                BoundingBox bb;
+
                 for (int x = startX; x < endX; x++)
                 {
                     Tile tile = _maps.Felucca.Tiles.GetLandTile(x, y);
-                    
-                    Vector2 v1;
-                    v1.X = -22 + (x * 44 );
-                    v1.Y = -22 + (y * -44) + tile._z * 4;
-                    Vector2 v2 = new Vector2(v1.X + 44, v1.Y + 44);
+                    Tile tileEast = _maps.Felucca.Tiles.GetLandTile(x - 1, y);
+                    Tile tileSouth = _maps.Felucca.Tiles.GetLandTile(x, y + 1);
+                    Tile tileDown = _maps.Felucca.Tiles.GetLandTile(x - 1, y + 1);
+                                        
+                    offset.X += TileStepX;
+                    offset.Y -= TileStepY;
 
-                    _renderer.QueueQuad(state, v1, v2, _textureFactory.CreateLand(tile._id));
+                    tileZ = tile._z * 4;
+                    eastTileZ = tileEast._z * 4;
+                    southTileZ = tileSouth._z * 4;
+                    downTileZ = tileDown._z * 4;
+
+                    center.X = offset.X;
+                    center.Y = offset.Y;
+
+                    northVector.X = center.X;
+                    northVector.Y = center.Y - TileSizeOver2 - tileZ;
+
+                    eastVector.X = center.X + TileSizeOver2;
+                    eastVector.Y = center.Y - eastTileZ;
+
+                    westVector.X = center.X - TileSizeOver2;
+                    westVector.Y = center.Y - southTileZ;
+
+                    southVector.X = center.X;
+                    southVector.Y = center.Y + TileSizeOver2 - downTileZ;
+
+                    bb.Min = new Vector3(westVector.X, northVector.Y, 0);
+                    bb.Max = new Vector3(eastVector.X, southVector.Y, 0);
+
+                    if(_camera.BoundingFrustum.Intersects(bb))
+                        _renderer.QueueQuad(state, ref northVector, ref eastVector, ref westVector, ref southVector, _textureFactory.CreateLand(tile._id));
                 }
             }
 
             _renderer.Flush(state);
 
-            state.PopView();
             state.PopProjection();
         }
 
