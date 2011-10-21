@@ -9,9 +9,7 @@ namespace Client.Graphics
         Vector2 Position { get; set; }
         Vector2 HalfVector { get; }
         Matrix Projection { get; }
-        Matrix View { get; }
+        //Matrix View { get; }
         BoundingFrustum BoundingFrustum { get; }
-
-        float Zoom { get; set; }
     }
 }

@@ -31,10 +31,10 @@ namespace Client.Graphics
 
             for (int i = 0; i < _vertices.Length; i+=4)
             {
-                _vertices[i + 0].TextureCoordinate = new Vector2(0,1);
-                _vertices[i + 1].TextureCoordinate = new Vector2(0,0);
-                _vertices[i + 2].TextureCoordinate = new Vector2(1,1);
-                _vertices[i + 3].TextureCoordinate = new Vector2(1,0);
+                _vertices[i + 0].TextureCoordinate = new Vector2(1,1);
+                _vertices[i + 1].TextureCoordinate = new Vector2(0,1);
+                _vertices[i + 2].TextureCoordinate = new Vector2(1,0);
+                _vertices[i + 3].TextureCoordinate = new Vector2(0,0);
             }
 
             //for (int i = 0; i < _indices.Length; i += 6)
@@ -51,16 +51,16 @@ namespace Client.Graphics
             {
                 new VertexPositionTexture(
                     new Vector3(0,0,1),
-                    new Vector2(0,1)),
-                new VertexPositionTexture(
-                    new Vector3(0,0,1),
                     new Vector2(0,0)),
                 new VertexPositionTexture(
                     new Vector3(0,0,1),
-                    new Vector2(1,1)),
+                    new Vector2(0,1)),
                 new VertexPositionTexture(
                     new Vector3(0,0,1),
-                    new Vector2(1,0))
+                    new Vector2(1,0)),
+                new VertexPositionTexture(
+                    new Vector3(0,0,1),
+                    new Vector2(1,1))
             };
 
             _quadIndices = new ushort[] { 0, 1, 2, 2, 1, 3 };
@@ -81,6 +81,27 @@ namespace Client.Graphics
             _quadVertices[3].Position.Y = v2.Y;
 
             GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, _quadVertices, 0, 4, _quadIndices, 0, 2);
+        }
+
+        internal void QueueQuad(DrawState state, ref Vector2 tl, ref Vector2 tr, ref Vector2 bl, ref Vector2 br, Texture2D texture)
+        {
+            if (_currentVertex + 4 >= _vertices.Length)
+                Flush(state);
+
+            _vertices[_currentVertex + 0].Position.X = tl.X;
+            _vertices[_currentVertex + 0].Position.Y = tl.Y;
+
+            _vertices[_currentVertex + 1].Position.X = bl.X;
+            _vertices[_currentVertex + 1].Position.Y = bl.Y;
+
+            _vertices[_currentVertex + 2].Position.X = tr.X;
+            _vertices[_currentVertex + 2].Position.Y = tr.Y;
+
+            _vertices[_currentVertex + 3].Position.X = br.X;
+            _vertices[_currentVertex + 3].Position.Y = br.Y;
+
+            _currentVertex += 4;
+            _textures.Add(texture);
         }
 
         internal void QueueQuad(DrawState state, Vector2 v1, Vector2 v2, Texture2D texture)
@@ -109,14 +130,14 @@ namespace Client.Graphics
             if (_currentVertex == 0)
                 return;
 
-            using (var vertexBuffer = new VertexBuffer(state.GraphicsDevice, VertexPositionTexture.VertexDeclaration, _vertices.Length, BufferUsage.None))
+            GraphicsDevice device = state.GraphicsDevice;
+
+            using (var vertexBuffer = new VertexBuffer(device, VertexPositionTexture.VertexDeclaration, _vertices.Length, BufferUsage.None))
             {
-                using (var indexBuffer = new IndexBuffer(state.GraphicsDevice, IndexElementSize.SixteenBits, _quadIndices.Length, BufferUsage.None))
+                using (var indexBuffer = new IndexBuffer(device, IndexElementSize.SixteenBits, _quadIndices.Length, BufferUsage.None))
                 {
                     vertexBuffer.SetData(_vertices, 0, _vertices.Length);
                     indexBuffer.SetData(_quadIndices, 0, _quadIndices.Length);
-
-                    GraphicsDevice device = state.GraphicsDevice;
 
                     device.Indices = indexBuffer;
                     device.SetVertexBuffer(vertexBuffer);
