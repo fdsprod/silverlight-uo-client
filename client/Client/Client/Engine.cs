@@ -12,7 +12,6 @@ using Client.Ultima;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System.Diagnostics;
 
 namespace Client
 {
@@ -283,13 +282,18 @@ namespace Client
             const int TileStepX = 22;
             const int TileStepY = 22;
 
+            const int MaxTileDistance = 10;
+            const int MaxTileDistanceTime2 = MaxTileDistance * 2;
+
             PresentationParameters pp = state.PresentationParameters;
-            
+
             Vector2 cameraOffset = new Vector2(0.5f, 0.5f);
             Vector2 cameraPosition = state.Camera.Position + cameraOffset;
             Vector2 viewSize = new Vector2(pp.BackBufferWidth, pp.BackBufferHeight);
             Vector2 tileCounts = new Vector2(viewSize.X / 22, viewSize.Y / 22);
-            //Vector2 tileCountsOver2 = tileCounts / 2;
+
+            tileCounts.X = Math.Min(tileCounts.X, MaxTileDistanceTime2);
+            tileCounts.Y = Math.Min(tileCounts.Y, MaxTileDistanceTime2);
 
             int startX = (int)(cameraPosition.X - tileCounts.X);
             int startY = (int)(cameraPosition.Y - tileCounts.Y);
@@ -301,8 +305,8 @@ namespace Client
 
             for (int y = startY; y < endY; y++)
             {
-                offset.Y = ((tileCounts.Y * 2) + (startY - y)) * TileStepY;
                 offset.X = ((-tileCounts.X / 4) + (startY - y)) * TileStepY;
+                offset.Y = ((tileCounts.Y * 2) + (startY - y)) * TileStepY;
 
                 BoundingBox bb;
 
@@ -312,7 +316,7 @@ namespace Client
                     Tile tileEast = _maps.Felucca.Tiles.GetLandTile(x - 1, y);
                     Tile tileSouth = _maps.Felucca.Tiles.GetLandTile(x, y + 1);
                     Tile tileDown = _maps.Felucca.Tiles.GetLandTile(x - 1, y + 1);
-                                        
+
                     offset.X += TileStepX;
                     offset.Y -= TileStepY;
 
@@ -339,7 +343,7 @@ namespace Client
                     bb.Min = new Vector3(westVector.X, northVector.Y, 0);
                     bb.Max = new Vector3(eastVector.X, southVector.Y, 0);
 
-                    if(_camera.BoundingFrustum.Intersects(bb))
+                    if (_camera.BoundingFrustum.Intersects(bb))
                         _renderer.QueueQuad(state, ref northVector, ref eastVector, ref westVector, ref southVector, _textureFactory.CreateLand(tile._id));
                 }
             }

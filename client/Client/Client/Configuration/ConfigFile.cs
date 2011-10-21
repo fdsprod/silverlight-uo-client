@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Windows;
 using System.Xml;
 using System.Xml.Linq;
 
 using Client.Diagnostics;
 using Client.IO;
-using System.IO.IsolatedStorage;
 
 namespace Client.Configuration
 {
@@ -39,6 +39,9 @@ namespace Client.Configuration
 
             try
             {
+                if (!Application.Current.IsRunningOutOfBrowser)
+                    return;
+
                 lock (_syncRoot)
                 {
                     using (Stream stream = File.Open(Paths.ConfigFile, FileMode.Open))
@@ -111,10 +114,13 @@ namespace Client.Configuration
                     configuration.Add(xSection);
                 }
 
-                lock (_syncRoot)
+                if (Application.Current.IsRunningOutOfBrowser)
                 {
-                    using (Stream stream = File.Open(Paths.ConfigFile, FileMode.Create))
-                        document.Save(stream);
+                    lock (_syncRoot)
+                    {
+                        using (Stream stream = File.Open(Paths.ConfigFile, FileMode.Create))
+                            document.Save(stream);
+                    }
                 }
             }
             catch (Exception e)
