@@ -1,0 +1,1 @@
+This project has moved from Silverlight to SharpDX.  You can find more information here http://code.google.com/p/openuo/
